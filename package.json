@@ -1,0 +1,32 @@
+{
+  "name": "@arcticzeroo/msu",
+  "version": "1.0.0",
+  "description": "MSU webserver module",
+  "main": "module.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArcticZeroo/webserver-module-msu.git"
+  },
+  "author": "spencer@frozor.io",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ArcticZeroo/webserver-module-msu/issues"
+  },
+  "homepage": "https://github.com/ArcticZeroo/webserver-module-msu#readme",
+  "dependencies": {
+    "@arcticzeroo/webserver-module": "^1.0.0",
+    "cheerio": "^1.0.0-rc.2",
+    "dateformat": "^3.0.3",
+    "expiring-cache": "^0.0.1",
+    "expiring-per-item-cache": "^0.0.3",
+    "express": "^4.16.3",
+    "frozor-logger": "^3.0.13"
+  },
+  "devDependencies": {
+    "@arcticzeroo/eslint-config": "^1.0.6",
+    "eslint": "^5.0.1"
+  }
+}
