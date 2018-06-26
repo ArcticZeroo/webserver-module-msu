@@ -1,5 +1,5 @@
 {
-  "name": "@arcticzeroo/msu",
+  "name": "@arcticzeroo/webserver-module-msu",
   "version": "1.0.0",
   "description": "MSU webserver module",
   "main": "module.js",
