@@ -1,6 +1,6 @@
 {
   "name": "@arcticzeroo/webserver-module-msu",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "MSU webserver module",
   "main": "module.js",
   "scripts": {
