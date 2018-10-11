@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@arcticzeroo/eslint-config": "latest",
+    "cors": "^2.8.4",
     "eslint": "^5.0.1"
   }
 }
