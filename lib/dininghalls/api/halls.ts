@@ -5,6 +5,13 @@ const config = require('../../../config/');
 
 const NAME_FROM_URL = new RegExp(`^${config.pages.DINING_HALL_MENU}(.+?)/all`);
 
+interface DiningHall {
+    hallName: string;
+    searchName: string;
+    brandName: string;
+    fullName: string;
+}
+
 /**
  * Make a request to the MSU eat at state homepage, to parse all dining hall primary data from it.
  * This will return an array of objects which have the following properties:
@@ -15,7 +22,7 @@ const NAME_FROM_URL = new RegExp(`^${config.pages.DINING_HALL_MENU}(.+?)/all`);
  * Usually you will want to represent a hall with the fullName.
  * @returns {Promise<Array.<Object>>}
  */
-async function getDiningHallNames() {
+async function retrieveDiningHalls() {
     let body;
     try {
         body = await request(config.pages.EAT_AT_STATE);
@@ -67,4 +74,4 @@ async function getDiningHallNames() {
     return diningHalls;
 }
 
-module.exports = { getDiningHallNames };
+export { DiningHall, retrieveDiningHalls }

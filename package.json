@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/ArcticZeroo/webserver-module-msu#readme",
   "dependencies": {
-    "@arcticzeroo/webserver-module": "^1.x.x",
+    "@arcticzeroo/webserver-module": "^1.0.3",
     "actions-on-google": "^2.3.0",
     "cheerio": "^1.0.0-rc.2",
     "dateformat": "^3.0.3",
@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@arcticzeroo/eslint-config": "latest",
+    "@types/cheerio": "^0.22.9",
     "eslint": "^5.0.1"
   }
 }
