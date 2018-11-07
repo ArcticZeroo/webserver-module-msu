@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio';
 import * as request from '../../common/retryingRequest';
 import * as config from '../../../config/';
+import { DiningHall } from './halls';
 
 const { Meal } = require('../enum');
 
@@ -243,7 +244,7 @@ function parseTimeData(data) {
     return parsedHours;
 }
 
-async function retrieveDiningHallHours(diningHalls): Promise<{ [searchName: string]: HoursForMeal }> {
+async function retrieveDiningHallHours(diningHalls: DiningHall[]): Promise<{ [searchName: string]: HoursForMeal }> {
     let body;
     try {
         body = await request(config.pages.EAT_AT_STATE + config.pages.DINING_HALL_HOURS);
@@ -302,4 +303,4 @@ async function retrieveDiningHallHours(diningHalls): Promise<{ [searchName: stri
     return hours;
 }
 
-module.exports = { parseTimeData, parseOnlyTimeString, getDiningHallHours: retrieveDiningHallHours };
+export { parseTimeData, parseOnlyTimeString, retrieveDiningHallHours };

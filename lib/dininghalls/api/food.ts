@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio';
 import * as ExpiringCache from 'expiring-cache';
 import * as dateFormat from 'dateformat';
-import WebserverModule from '@arcticzeroo/webserver-module/WebserverModule';
+import WebserverModule from '@arcticzeroo/webserver-module';
 
 import * as request from '../../common/retryingRequest';
 import * as config from '../../../config/';
@@ -29,7 +29,7 @@ interface DiningHallMenu {
 interface MenuSelection {
     diningHall: DiningHall,
     menuDate: MenuDate,
-    meal: MealIdentifier
+    meal: number // from MealIdentifier
 }
 
 class MenuDate {
@@ -86,7 +86,7 @@ class FoodModule extends WebserverModule {
         return [diningHall.searchName, menuDate.getFormatted(), meal].join('|');
     }
 
-    async deserializeFromKey(key: string) {
+    async deserializeFromKey(key: string): Promise<MenuSelection> {
         const [searchName, date, meal] = key.split('|');
 
         let diningHall;
@@ -96,15 +96,15 @@ class FoodModule extends WebserverModule {
             throw e;
         }
 
-        return { diningHall, menuDate: MenuDate.fromFormatted(date), meal };
+        return { diningHall, menuDate: MenuDate.fromFormatted(date), meal: parseInt(meal) };
     }
 
-    static getRequestUrl({ diningHall, date, meal }): string {
-        return encodeURI(`${config.pages.EAT_AT_STATE + config.pages.DINING_HALL_MENU + diningHall.fullName}/all/${date}?field_mealtime_target_id=${MealIdentifier.getByIndex(meal)}`);
+    static getRequestUrl({ diningHall, menuDate, meal } : MenuSelection): string {
+        return encodeURI(`${config.pages.EAT_AT_STATE + config.pages.DINING_HALL_MENU + diningHall.fullName}/all/${menuDate.getFormatted()}?field_mealtime_target_id=${MealIdentifier.getByIndex(meal)}`);
     }
 
     async getDiningHallMenu({ diningHall, menuDate, meal } : MenuSelection): Promise<DiningHallMenu> {
-        const url = FoodModule.getRequestUrl({ diningHall, date: menuDate.getFormatted(), meal });
+        const url = FoodModule.getRequestUrl({ diningHall, menuDate, meal });
 
         let body;
         try {

@@ -1,191 +1,227 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
 /* eslint-disable no-console */
-const webserver_module_1 = require("@arcticzeroo/webserver-module");
-const express = require("express");
-const hall_storage_1 = require("./hall-storage");
-const food_1 = require("./api/food");
-const api = require("./enum");
-const logger_1 = require("./logger");
-class DiningHallModule extends webserver_module_1.default {
+import WebserverModule from '@arcticzeroo/webserver-module';
+import * as express from 'express';
+import HallStorageModule from './hall-storage';
+import { FoodModule, MenuDate } from './api/food';
+import * as api from './enum';
+import log from './logger';
+
+class DiningHallModule extends WebserverModule {
+    static IDENFITIER: string = 'diningHallModule';
+
     constructor(data) {
-        super(Object.assign({}, data, { startByDefault: false, name: DiningHallModule.IDENFITIER }));
-        for (const child of [hall_storage_1.default, food_1.FoodModule]) {
+        super({
+            ...data,
+            startByDefault: false,
+            name: DiningHallModule.IDENFITIER
+        });
+
+        for (const child of [ HallStorageModule, FoodModule ]) {
             this.loadChild(child, { storage: this.hallStorage });
         }
+
         this.start();
     }
-    get hallStorage() {
-        return this.children.get(hall_storage_1.default.IDENTIFIER);
+
+    get hallStorage(): HallStorageModule {
+        return this.children.get(HallStorageModule.IDENTIFIER);
     }
-    get food() {
-        return this.children.get(food_1.FoodModule.IDENTIFIER);
+
+    get food(): FoodModule {
+        return this.children.get(FoodModule.IDENTIFIER);
     }
-    start() {
+
+    start(): void {
         const router = express.Router();
+
         router.get('/list', (req, res) => {
-            const go = () => __awaiter(this, void 0, void 0, function* () {
+            const go = async () => {
                 try {
-                    res.json(yield this.hallStorage.retrieve());
-                }
-                catch (e) {
+                    res.json(await this.hallStorage.retrieve());
+                } catch (e) {
                     throw e;
                 }
-            });
+            };
+
             go().catch(e => {
                 res.status(500).json({
                     error: 'Internal Server Error'
                 });
+
                 console.error('Could not load dining halls:');
                 console.error(e);
             });
         });
+
         router.get('/menu/all/:date/', (req, res) => {
             const { date } = req.params;
-            const go = () => __awaiter(this, void 0, void 0, function* () {
+
+            const go = async () => {
                 if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
                     return res.status(400).json({ error: 'Bad Request', message: 'Invalid date value.' });
                 }
-                logger_1.default.debug('Date is valid');
+
+                log.debug('Date is valid');
+
                 const hallMenus = {};
+
                 let halls;
                 try {
-                    halls = yield this.hallStorage.retrieve();
-                }
-                catch (e) {
+                    halls = await this.hallStorage.retrieve();
+                } catch (e) {
                     throw new Error('Could not load halls');
                 }
+
                 const hallMenuPromises = [];
                 for (const hall of halls) {
                     const menuDataPromises = [];
-                    const menuDate = food_1.MenuDate.fromFormatted(date);
+                    const menuDate = MenuDate.fromFormatted(date);
                     const mealCount = Object.keys(api.Meal).length;
+
                     for (let i = 0; i < mealCount; i++) {
                         menuDataPromises.push(this.food.retrieveMenu(hall, menuDate, i));
                     }
+
                     hallMenuPromises.push(Promise.all(menuDataPromises).then(data => hallMenus[hall.searchName] = data));
                 }
+
                 try {
-                    yield Promise.all(hallMenuPromises);
-                }
-                catch (e) {
+                    await Promise.all(hallMenuPromises);
+                } catch (e) {
                     throw e;
                 }
+
                 res.json(hallMenus);
-            });
+            };
+
             go().catch(e => {
                 res.status(500).json({
                     error: 'Internal Server Error'
                 });
+
                 console.error('Could not load dining hall menus:');
                 console.error(e);
             });
         });
+
         router.get('/menu/:search/:date/all', (req, res) => {
             const { search, date } = req.params;
-            const go = () => __awaiter(this, void 0, void 0, function* () {
-                logger_1.default.debug(`search:${search}, date:${date}`);
+
+            const go = async () => {
+                log.debug(`search:${search}, date:${date}`);
+
                 if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
                     return res.status(400).json({ error: 'Bad Request', message: 'Invalid date value.' });
                 }
-                logger_1.default.debug('Date is valid');
+
+                log.debug('Date is valid');
+
                 let foundHall;
                 try {
-                    foundHall = yield this.hallStorage.findBySearchName(search);
-                }
-                catch (e) {
+                    foundHall = await this.hallStorage.findBySearchName(search);
+                } catch (e) {
                     throw e;
                 }
+
                 if (!search || !foundHall) {
                     return res.status(400).json({ error: 'Bad Request', message: 'Invalid dining hall search value.' });
                 }
-                logger_1.default.debug(`Found ${foundHall.fullName}`);
+
+                log.debug(`Found ${foundHall.fullName}`);
+
                 const menuDataPromises = [];
-                const menuDate = food_1.MenuDate.fromFormatted(date);
+                const menuDate = MenuDate.fromFormatted(date);
                 const mealCount = Object.keys(api.Meal).length;
                 for (let i = 0; i < mealCount; i++) {
                     menuDataPromises.push(this.food.retrieveMenu(foundHall, menuDate, i));
                 }
+
                 let menuData;
                 try {
-                    menuData = yield Promise.all(menuDataPromises);
-                }
-                catch (e) {
-                    logger_1.default.error(`Could not get menus for ${foundHall.hallName}:`);
+                    menuData = await Promise.all(menuDataPromises);
+                } catch (e) {
+                    log.error(`Could not get menus for ${foundHall.hallName}:`);
                     console.error(e);
                     return res.status(500).json({ error: 'Internal Server Error' });
                 }
+
                 res.json(menuData);
-            });
+            };
+
             go().catch(e => {
                 res.status(500).json({
                     error: 'Internal Server Error'
                 });
+
                 console.error(`Could not load dining hall menus for term ${search}:`);
                 console.error(e);
             });
         });
+
         router.get('/menu/:search/:date/:meal', (req, res) => {
             const { search, date, meal } = req.params;
-            const go = () => __awaiter(this, void 0, void 0, function* () {
-                logger_1.default.debug(`search:${search}, date:${date}, meal:${meal}`);
+
+            const go = async () => {
+                log.debug(`search:${search}, date:${date}, meal:${meal}`);
+
                 if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
                     return res.status(400).json({ error: 'Bad Request', message: 'Invalid date value.' });
                 }
-                logger_1.default.debug('Date is valid');
+
+                log.debug('Date is valid');
+
                 let validMeal = true;
                 if (isNaN(meal)) {
                     validMeal = false;
-                }
-                else {
+                } else {
                     const mealNum = parseInt(meal);
+
                     validMeal = mealNum >= 0 && mealNum < Object.keys(api.Meal).length;
                 }
+
                 if (!validMeal) {
                     return res.status(400).json({ error: 'Bad Request', message: 'Invalid meal value.' });
                 }
-                logger_1.default.debug('Meal is valid');
+
+                log.debug('Meal is valid');
+
                 let foundHall;
                 try {
-                    foundHall = yield this.hallStorage.findBySearchName(search);
-                }
-                catch (e) {
+                    foundHall = await this.hallStorage.findBySearchName(search);
+                } catch (e) {
                     throw e;
                 }
+
                 if (!search || !foundHall) {
                     return res.status(400).json({ error: 'Bad Request', message: 'Invalid dining hall search value.' });
                 }
-                logger_1.default.debug(`Found ${foundHall.fullName}`);
+
+                log.debug(`Found ${foundHall.fullName}`);
+
                 let menuData;
                 try {
-                    menuData = yield this.food.retrieveMenu(foundHall, food_1.MenuDate.fromFormatted(date), parseInt(meal));
-                }
-                catch (e) {
-                    logger_1.default.error(`Could not get menu for ${foundHall.hallName}:`);
+                    menuData = await this.food.retrieveMenu(foundHall, MenuDate.fromFormatted(date), parseInt(meal));
+                } catch (e) {
+                    log.error(`Could not get menu for ${foundHall.hallName}:`);
                     console.error(e);
                     return res.status(500).json({ error: 'Internal Server Error' });
                 }
+
                 res.json(menuData);
-            });
+            };
+
             go().catch(e => {
                 res.status(500).json({
                     error: 'Internal Server Error'
                 });
+
                 console.error(`Could not load dining hall menu for term ${search}:`);
                 console.error(e);
             });
         });
+
         this.app.use('/api/msu/dining', router);
     }
 }
-DiningHallModule.IDENFITIER = 'diningHallModule';
+
 module.exports = DiningHallModule;
-//# sourceMappingURL=index.js.map

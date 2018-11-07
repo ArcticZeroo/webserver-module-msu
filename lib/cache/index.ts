@@ -1,9 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const ExpiringCache = require("expiring-per-item-cache");
+import * as ExpiringCache from 'expiring-per-item-cache';
+
 const cache = new ExpiringCache();
+
 cache.handleEndpoint = (key, fetch) => {
     cache.add(key, { fetch });
+
     return (req, res) => {
         cache.getValue(key)
             .then((value => res.status(200).json(value)))
@@ -11,10 +12,12 @@ cache.handleEndpoint = (key, fetch) => {
             .catch(() => res.status(500).json({ error: 'Internal Server Error' }));
     };
 };
+
 const keys = {
     foodTruckMenu: 'foodTruck_menu',
     foodTruckHtml: 'foodTruck_html'
 };
+
 cache.keys = keys;
-exports.default = cache;
-//# sourceMappingURL=index.js.map
+
+export default cache;

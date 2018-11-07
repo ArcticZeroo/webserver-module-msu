@@ -1,7 +1,7 @@
 import { DiningHall, retrieveDiningHalls } from './api/halls';
 import MongoUtil from '../util/MongoUtil';
 import WebserverModule from '@arcticzeroo/webserver-module/WebserverModule';
-import hours from './api/hours';
+import { retrieveDiningHallHours } from './api/hours';
 import * as ExpiringCache from 'expiring-cache';
 
 export default class HallStorageModule extends WebserverModule {
@@ -45,7 +45,7 @@ export default class HallStorageModule extends WebserverModule {
 
         let diningHallHours;
         try {
-            diningHallHours = await hours.getDiningHallHours(diningHalls);
+            diningHallHours = await retrieveDiningHallHours(diningHalls);
         } catch (e) {
             throw e;
         }
