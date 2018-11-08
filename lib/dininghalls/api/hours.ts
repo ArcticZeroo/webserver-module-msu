@@ -76,7 +76,7 @@ function parseTimeItself(timeSplit: string | string[]): number {
     return time;
 }
 
-function parseOnlyTimeString(timeStr: string) {
+function parseOnlyTimeString(timeStr: string): { start: number, end: number } {
     const parts = timeStr.split('-');
 
     if (parts.length !== 2) {
@@ -175,7 +175,7 @@ function parseConstantTime(data): HoursForMeal[] {
     return parsed;
 }
 
-function parseVaryingTime(data) {
+function parseVaryingTime(data: string[]) {
     const rebuilt = [[], []];
 
     let hasSplit = false;
@@ -265,6 +265,7 @@ async function retrieveDiningHallHours(diningHalls: DiningHall[]): Promise<{ [se
             continue;
         }
 
+        // wtf?
         const parentThreeLevelsUp = expectedHeader[0].parent.parent.parent;
 
         // This class represents a column of time data which we can
@@ -291,7 +292,7 @@ async function retrieveDiningHallHours(diningHalls: DiningHall[]): Promise<{ [se
             const timeDataRaw = [];
 
             timeElements.each(function () {
-                timeDataRaw.push(this.children[0].data);
+                timeDataRaw.push($(this).text());
             });
 
             timeSpansRaw.push(timeDataRaw);

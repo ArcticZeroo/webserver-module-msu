@@ -2,14 +2,19 @@ import * as express from 'express';
 import * as cheerio from 'cheerio';
 
 import WebserverModule from '@arcticzeroo/webserver-module';
-import cache from '../../cache';
+import { cache, CacheKey, handleEndpoint } from '../../cache';
 
 const MENU_TITLE_REGEX = /^(.+?)\s+(?:service)?\s*menu(?: \| (.+?) ([\d-]+)(?:,\s+)?(\d+))?$/i;
 // text, name, month, dates, year
 const MENU_NAME_AND_PRICE_REGEX = /(.+?)\*?[ \s]-\s+\$([\d.]+)/;
 const PRICE_KILL_DESCRIPTION_REGEX = /\$(\d+(?:\.\d+)?)\s*(.+)/;
 
-class FoodTruckMenuModule extends WebserverModule {
+export default class FoodTruckMenuModule extends WebserverModule {
+    // No longer protected, can use in child loading
+    constructor(props) {
+        super(props);
+    }
+
     static isTag($elem, tag) {
         return $elem.prop('tagName').toLowerCase() === tag.toLowerCase();
     }
@@ -59,7 +64,7 @@ class FoodTruckMenuModule extends WebserverModule {
     static async retrieveMenusFromWeb() {
         let htmlResponse;
         try {
-            htmlResponse = await cache.getValue(cache.keys.foodTruckHtml);
+            htmlResponse = await cache.getValue(CacheKey.foodTruckHtml);
         } catch (e) {
             throw e;
         }
@@ -101,10 +106,8 @@ class FoodTruckMenuModule extends WebserverModule {
     start() {
         const router = express.Router();
 
-        router.get('/api/msu/foodtruck/menu', cache.handleEndpoint(cache.keys.foodTruckMenu, () => FoodTruckMenuModule.retrieveMenusFromWeb()));
+        router.get('/api/msu/foodtruck/menu', handleEndpoint(CacheKey.foodTruckMenu, FoodTruckMenuModule.retrieveMenusFromWeb));
 
         this.app.use(router);
     }
 }
-
-module.exports = FoodTruckMenuModule;

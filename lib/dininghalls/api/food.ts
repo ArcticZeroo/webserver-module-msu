@@ -68,6 +68,11 @@ class MenuDate {
 }
 
 class FoodModule extends WebserverModule {
+    /**
+     * Using a local cache instead of an expiring-per-item-cache because ExpiringCache allows for values to be retrieved
+     * with dynamic keys but static fetch methods, vs the per item cache which requires a key to be registered
+     * beforehand since each key has its own fetch method
+     */
     private cache: ExpiringCache;
     private storage: HallStorageModule;
 

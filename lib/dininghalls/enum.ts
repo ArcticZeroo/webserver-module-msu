@@ -5,7 +5,7 @@ enum Meal {
     LATE_NIGHT = 'Late Night',
 }
 
-const MealIdentifier = {
+const MealIdentifier: { 'Breakfast': number, 'Lunch': number, 'Dinner': number, 'Late Night': number, getByIndex: (i: number) => number } = {
     [Meal.BREAKFAST]: 192,
     [Meal.LUNCH]: 190,
     [Meal.DINNER]: 191,

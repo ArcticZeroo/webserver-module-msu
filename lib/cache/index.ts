@@ -1,10 +1,19 @@
-import * as ExpiringCache from 'expiring-per-item-cache';
+import ExpiringCache from 'expiring-per-item-cache';
+import { RequestHandler } from 'express';
 
-const cache = new ExpiringCache();
+enum CacheKey {
+    foodTruckMenu,
+    foodTruckHtml,
+    foodTruckStops,
+    movieNightShowings
+}
 
-cache.handleEndpoint = (key, fetch) => {
+const cache = new ExpiringCache<CacheKey, any>();
+
+const handleEndpoint = (key: CacheKey, fetch: () => Promise<any>): RequestHandler => {
     cache.add(key, { fetch });
 
+    // Return the request handler that will be used
     return (req, res) => {
         cache.getValue(key)
             .then((value => res.status(200).json(value)))
@@ -13,11 +22,4 @@ cache.handleEndpoint = (key, fetch) => {
     };
 };
 
-const keys = {
-    foodTruckMenu: 'foodTruck_menu',
-    foodTruckHtml: 'foodTruck_html'
-};
-
-cache.keys = keys;
-
-export default cache;
+export { CacheKey, cache, handleEndpoint };

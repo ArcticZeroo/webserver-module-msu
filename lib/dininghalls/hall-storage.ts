@@ -21,6 +21,7 @@ export default class HallStorageModule extends WebserverModule {
 
     async retrieveFromDb() {
         return new Promise((resolve, reject) => {
+            // @ts-ignore
             this.db.MsuDiningHall.find({}, function (err, docs) {
                 if (err) {
                     return reject(err);
@@ -77,12 +78,14 @@ export default class HallStorageModule extends WebserverModule {
         try {
             diningHalls = await this.retrieveFromWeb();
 
+            // @ts-ignore
             await this.db.MsuDiningHall.remove().exec();
         } catch (e) {
             throw e;
         }
 
         for (const diningHall of diningHalls) {
+            // @ts-ignore
             const diningHallDoc = new this.db.MsuDiningHall(diningHall);
 
             try {
@@ -113,6 +116,7 @@ export default class HallStorageModule extends WebserverModule {
 
         if (dbHalls.length) {
             this.log.debug('There are halls in the db, returning');
+            // @ts-ignore
             return dbHalls.map(diningHall => MongoUtil.cleanProperties(this.db.schemas.MsuDiningHall, diningHall));
         }
 

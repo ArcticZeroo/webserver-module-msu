@@ -22,7 +22,7 @@ interface DiningHall {
  * Usually you will want to represent a hall with the fullName.
  * @returns {Promise<Array.<Object>>}
  */
-async function retrieveDiningHalls() {
+async function retrieveDiningHalls(): Promise<DiningHall[]> {
     let body;
     try {
         body = await request(config.pages.EAT_AT_STATE);

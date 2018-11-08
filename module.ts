@@ -1,7 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const webserver_module_1 = require("@arcticzeroo/webserver-module");
-class MsuRootModule extends webserver_module_1.default {
+import WebserverModule from '@arcticzeroo/webserver-module';
+
+export default class MsuRootModule extends WebserverModule {
     start() {
         for (const child of [
             require('./lib/dininghalls'),
@@ -13,5 +12,3 @@ class MsuRootModule extends webserver_module_1.default {
         }
     }
 }
-exports.default = MsuRootModule;
-//# sourceMappingURL=module.js.map
