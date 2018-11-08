@@ -3,7 +3,7 @@ import * as ExpiringCache from 'expiring-cache';
 import * as dateFormat from 'dateformat';
 import WebserverModule from '@arcticzeroo/webserver-module';
 
-import * as request from '../../common/retryingRequest';
+import request from '../../common/retryingRequest';
 import * as config from '../../../config/';
 import { MealIdentifier } from '../enum';
 import HallStorageModule from '../hall-storage';

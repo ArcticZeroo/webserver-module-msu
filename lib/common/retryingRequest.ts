@@ -1,6 +1,6 @@
 import request from './request';
 
-async function makeRetryingRequest(uri, limit = 2): Promise<string> {
+async function makeRetryingRequest(uri: string, limit: number = 2): Promise<string> {
     try {
         return await request(uri);
     } catch (e) {
@@ -12,4 +12,4 @@ async function makeRetryingRequest(uri, limit = 2): Promise<string> {
     }
 }
 
-module.exports = makeRetryingRequest;
+export default makeRetryingRequest;

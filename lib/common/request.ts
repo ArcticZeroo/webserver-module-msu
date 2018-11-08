@@ -1,6 +1,6 @@
 import * as request from 'request';
 
-async function makeMsuRequest(uri): Promise<string> {
+async function makeMsuRequest(uri: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
         request.get({ uri, rejectUnauthorized: false },
             (err, res, body) => {

@@ -1,8 +1,7 @@
 import * as cheerio from 'cheerio';
-import * as request from '../../common/retryingRequest';
 import * as config from '../../../config/';
+import request from '../../common/retryingRequest';
 import { DiningHall } from './halls';
-
 const { Meal } = require('../enum');
 
 // Begin, end should be a number representing the hour of the day in 24h format
