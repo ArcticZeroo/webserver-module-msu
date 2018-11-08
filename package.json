@@ -30,6 +30,7 @@
     "@arcticzeroo/eslint-config": "latest",
     "@types/cheerio": "^0.22.9",
     "@types/jquery": "^3.3.22",
+    "@types/request": "^2.48.1",
     "eslint": "^5.0.1"
   }
 }

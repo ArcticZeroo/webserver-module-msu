@@ -4,7 +4,7 @@ import * as express from 'express';
 import WebserverModule from '@arcticzeroo/webserver-module';
 import config from '../../config/';
 import request from '../common/request';
-import { cache, CacheKey } from '../cache';
+import { CacheKey, handleEndpoint } from '../cache';
 import ConversionUtil from '../util/ConversionUtil';
 import LegacyModule from './legacy';
 
@@ -100,26 +100,7 @@ async function getMovieShowings() {
     return movies;
 }
 
-cache.add(CacheKey.movieNightShowings, { fetch: getMovieShowings });
-
-router.get('/list', function handle(req, res) {
-    async function go() {
-        try {
-            res.json(await cache.getValue(CacheKey.movieNightShowings));
-        } catch (e) {
-            throw e;
-        }
-    }
-
-    go().catch(e => {
-        res.status(500).json({
-            error: 'Internal Server Error'
-        });
-
-        console.error('Could not load movie showings:');
-        console.error(e);
-    });
-});
+router.get('/list', handleEndpoint(CacheKey.movieNightShowings, getMovieShowings));
 
 class MovieModule extends WebserverModule {
     start() {
