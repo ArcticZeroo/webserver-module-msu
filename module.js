@@ -5,8 +5,8 @@ class MsuRootModule extends webserver_module_1.default {
     start() {
         for (const child of [
             require('./lib/src/dininghalls'),
-            require('./lib/src/foodtruck/index'),
-            require('./lib/src/movies/index'),
+            require('./lib/src/foodtruck'),
+            require('./lib/src/movies'),
             require('./lib/src/events')
         ]) {
             this.loadChild(child);

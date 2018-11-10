@@ -2,9 +2,9 @@ import * as cheerio from 'cheerio';
 import * as express from 'express';
 
 import WebserverModule from '@arcticzeroo/webserver-module';
-import config from '../../../config/index';
-import request from '../common/request';
-import { CacheKey, handleEndpoint } from '../cache/index';
+import config from '../../../config';
+import request from '../common/retryingRequest';
+import { CacheKey, handleEndpoint } from '../cache';
 import ConversionUtil from '../util/ConversionUtil';
 import LegacyModule from './legacy';
 

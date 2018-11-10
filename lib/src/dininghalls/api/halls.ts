@@ -1,7 +1,6 @@
-const cheerio = require('cheerio');
-
-const request = require('../../common/retryingRequest');
-const config = require('../../../../config/index');
+import config from '../../../../config';
+import request from '../../common/retryingRequest';
+import * as cheerio from 'cheerio';
 
 const NAME_FROM_URL = new RegExp(`^${config.pages.DINING_HALL_MENU}(.+?)/all`);
 
@@ -64,8 +63,8 @@ async function retrieveDiningHalls(): Promise<DiningHall[]> {
         // The first match from this class find will be the one we want,
         // so get the data contained in its first child (which is a div
         // tag, apparently)
-        const hallName = $nameSquare.find('.dining-hall-name')[0].children[0].data;
-        const brandName = $nameSquare.find('.brand-name')[0].children[0].data;
+        const hallName = $($nameSquare.find('.dining-hall-name')[0]).text();
+        const brandName = $($nameSquare.find('.brand-name')[0]).text();
 
         diningHalls.push({ hallName, brandName, fullName,
             searchName: hallName.toLowerCase().replace('hall', '').trim() });
