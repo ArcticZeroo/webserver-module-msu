@@ -101,10 +101,14 @@ async function getMovieShowings() {
 
 router.get('/list', handleEndpoint(CacheKey.movieNightShowings, getMovieShowings));
 
-class MovieModule extends WebserverModule {
+export default class MovieModule extends WebserverModule {
+    static IDENTIFIER = 'Movie Night';
+
+    constructor(data) {
+        super({ ...data, name: MovieModule.IDENTIFIER });
+    }
+
     start() {
         this.app.use('/api/msu/movies', router);
     }
 }
-
-module.exports = MovieModule;

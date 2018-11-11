@@ -1,5 +1,11 @@
 import WebserverModule from '@arcticzeroo/webserver-module';
 
+import DiningHallModule from './lib/src/dininghalls';
+import EventsModule from './lib/src/events';
+import FoodTruckModule from './lib/src/foodtruck';
+import MovieModule from './lib/src/movies';
+
+
 export default class MsuRootModule extends WebserverModule {
     static IDENTIFIER: string = 'MSU Root Module';
 
@@ -9,10 +15,10 @@ export default class MsuRootModule extends WebserverModule {
 
     start() {
         for (const child of [
-            require('./lib/src/dininghalls'),
-            require('./lib/src/foodtruck'),
-            require('./lib/src/movies'),
-            require('./lib/src/events/index')
+            DiningHallModule,
+            FoodTruckModule,
+            MovieModule,
+            EventsModule
         ]) {
             this.loadChild(child);
         }

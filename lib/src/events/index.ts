@@ -1,7 +1,8 @@
 import WebserverModule from '@arcticzeroo/webserver-module';
 import * as express from 'express';
+import UabModule from './uab';
 
-class EventsModule extends WebserverModule {
+export default class EventsModule extends WebserverModule {
     constructor(data) {
         //TODO: Add this behavior to webserver module package itself
         // Child classes will now only have to route to their desired path, not /api/msu/events, when they use app
@@ -11,12 +12,10 @@ class EventsModule extends WebserverModule {
 
         super(data);
 
-        this.loadChild(require('./uab/index'));
+        this.loadChild(UabModule);
     }
 
     start(): void {
 
     }
 }
-
-module.exports = EventsModule;

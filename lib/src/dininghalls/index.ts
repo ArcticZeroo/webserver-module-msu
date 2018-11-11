@@ -7,7 +7,7 @@ import * as api from './enum';
 import log from './logger';
 import UpdaterModule from './updater';
 
-class DiningHallModule extends WebserverModule {
+export default class DiningHallModule extends WebserverModule {
     static IDENFITIER: string = 'diningHallModule';
 
     constructor(data) {
@@ -224,5 +224,3 @@ class DiningHallModule extends WebserverModule {
         this.app.use('/api/msu/dining', router);
     }
 }
-
-module.exports = DiningHallModule;

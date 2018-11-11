@@ -8,7 +8,13 @@ import WebserverModule from '@arcticzeroo/webserver-module';
 import config from '../../../config/';
 import request from '../../common/retryingRequest';
 
-class UabModule extends WebserverModule {
+export default class UabModule extends WebserverModule {
+    static IDENTIFIER = 'UAB Events';
+
+    constructor(data) {
+        super({ ...data, name: UabModule.IDENTIFIER });
+    }
+
     static async retrieveSingleCalendarEventFromWeb(url): Promise<IUabEvent> {
         let htmlResponse;
         try {
@@ -97,5 +103,3 @@ class UabModule extends WebserverModule {
         this.app.use('/uab', router);
     }
 }
-
-export default UabModule;

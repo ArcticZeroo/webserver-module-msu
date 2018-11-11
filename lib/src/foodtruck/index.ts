@@ -93,6 +93,12 @@ async function retrieveStopsFromWeb() {
 cache.add(CacheKey.foodTruckHtml, { fetch: retrieveFoodTruckHtml });
 
 export default class FoodTruckModule extends WebserverModule {
+    static IDENTIFIER = 'Food Truck';
+
+    constructor(data) {
+        super({ ...data, name: FoodTruckModule.IDENTIFIER });
+    }
+
     start() {
         const router = express.Router();
 
