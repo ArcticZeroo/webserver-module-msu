@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const webserver_module_1 = require("@arcticzeroo/webserver-module");
 const dininghalls_1 = require("./lib/src/dininghalls");
 const events_1 = require("./lib/src/events");
@@ -21,5 +20,5 @@ class MsuRootModule extends webserver_module_1.default {
     }
 }
 MsuRootModule.IDENTIFIER = 'MSU Root Module';
-exports.default = MsuRootModule;
+module.exports = MsuRootModule;
 //# sourceMappingURL=module.js.map

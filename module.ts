@@ -6,7 +6,7 @@ import FoodTruckModule from './lib/src/foodtruck';
 import MovieModule from './lib/src/movies';
 
 
-export default class MsuRootModule extends WebserverModule {
+class MsuRootModule extends WebserverModule {
     static IDENTIFIER: string = 'MSU Root Module';
 
     constructor(data: any) {
@@ -24,3 +24,5 @@ export default class MsuRootModule extends WebserverModule {
         }
     }
 }
+
+export = MsuRootModule;

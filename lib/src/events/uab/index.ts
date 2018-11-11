@@ -46,9 +46,9 @@ export default class UabModule extends WebserverModule {
         const descriptionDataElements = $('.field-name-body .field-item p');
 
         const expectedLocationText = $(descriptionDataElements[0]).text();
-        const descriptionPieces = [];
+        const descriptionPieces: string[] = [];
 
-        let location;
+        let location: string;
 
         // Sometimes location is not listed, e.g. for "pop-up" events, and they use the first
         // paragraph element for the description instead
