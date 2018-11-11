@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as cheerio from 'cheerio';
 
 import WebserverModule from '@arcticzeroo/webserver-module';
-import config from '../../config/';
+import * as config from '../../config/';
 import DateUtil from '../util/DateUtil';
 import { cache, CacheKey, handleEndpoint } from '../cache';
 import request from '../common/retryingRequest';

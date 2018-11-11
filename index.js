@@ -7,7 +7,7 @@ const foodtruck_1 = require("./lib/src/foodtruck");
 const movies_1 = require("./lib/src/movies");
 class MsuRootModule extends webserver_module_1.default {
     constructor(data) {
-        super(Object.assign({}, data, { name: MsuRootModule.IDENTIFIER }));
+        super({ ...data, name: MsuRootModule.IDENTIFIER });
     }
     start() {
         for (const child of [

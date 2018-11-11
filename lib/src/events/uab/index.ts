@@ -5,7 +5,7 @@ import * as express from 'express';
 import * as cheerio from 'cheerio';
 
 import WebserverModule from '@arcticzeroo/webserver-module';
-import config from '../../../config/';
+import * as config from '../../../config/';
 import request from '../../common/retryingRequest';
 
 export default class UabModule extends WebserverModule {
