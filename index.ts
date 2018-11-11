@@ -25,4 +25,4 @@ class MsuRootModule extends WebserverModule {
     }
 }
 
-export = MsuRootModule;
+export default MsuRootModule;

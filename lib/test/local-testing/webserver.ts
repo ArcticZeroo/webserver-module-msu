@@ -1,4 +1,4 @@
-import RootModule from '../../../module';
+import RootModule from '../../../index';
 import * as express from 'express';
 
 const app = express();

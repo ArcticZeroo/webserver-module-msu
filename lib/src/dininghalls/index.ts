@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 import WebserverModule from '@arcticzeroo/webserver-module';
 import * as express from 'express';
-import HallStorageModule from './hall-storage';
+import { CacheKey, handleEndpoint } from '../cache';
 import { FoodModule, MenuDate } from './api/food';
 import * as api from './enum';
+import HallStorageModule from './hall-storage';
 import log from './logger';
 import UpdaterModule from './updater';
 
@@ -35,24 +36,7 @@ export default class DiningHallModule extends WebserverModule {
     start(): void {
         const router = express.Router();
 
-        router.get('/list', (req, res) => {
-            const go = async () => {
-                try {
-                    res.json(await this.hallStorage.retrieve());
-                } catch (e) {
-                    throw e;
-                }
-            };
-
-            go().catch(e => {
-                res.status(500).json({
-                    error: 'Internal Server Error'
-                });
-
-                console.error('Could not load dining halls:');
-                console.error(e);
-            });
-        });
+        router.get('/list', handleEndpoint(CacheKey.diningHallList, this.hallStorage.retrieve, this));
 
         router.get('/menu/all/:date/', (req, res) => {
             const { date } = req.params;

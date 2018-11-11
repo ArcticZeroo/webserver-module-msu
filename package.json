@@ -2,7 +2,7 @@
   "name": "@arcticzeroo/webserver-module-msu",
   "version": "1.1.0",
   "description": "MSU webserver module",
-  "main": "module.js",
+  "main": "index.js",
   "scripts": {
     "test": "mocha"
   },
