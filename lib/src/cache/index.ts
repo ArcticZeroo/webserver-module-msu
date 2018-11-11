@@ -27,7 +27,8 @@ const handleEndpoint = (key: CacheKey, fetch: () => Promise<any>, module?: Webse
                 res.status(500).json({ error: 'Internal Server Error' });
 
                 if (module) {
-                    module.log.error(`Error in endpoint ${req.route.path}`);
+                    module.log.error(`Error in endpoint ${req.route.path}:`);
+                    module.log(e);
                 }
             });
     };
