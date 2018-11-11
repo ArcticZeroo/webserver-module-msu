@@ -1,8 +1,7 @@
-const express = require('express');
+import RootModule from '../../../module';
+import * as express from 'express';
 
 const app = express();
-
-const RootModule = require('../../module');
 
 new RootModule({
     db: null,

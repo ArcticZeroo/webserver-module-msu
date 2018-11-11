@@ -2,11 +2,10 @@ import * as cheerio from 'cheerio';
 import * as express from 'express';
 
 import WebserverModule from '@arcticzeroo/webserver-module';
-import config from '../../../config';
+import config from '../../config/';
 import request from '../common/retryingRequest';
 import { CacheKey, handleEndpoint } from '../cache';
 import ConversionUtil from '../util/ConversionUtil';
-import LegacyModule from './legacy';
 
 const router = express.Router();
 
@@ -105,8 +104,6 @@ router.get('/list', handleEndpoint(CacheKey.movieNightShowings, getMovieShowings
 class MovieModule extends WebserverModule {
     start() {
         this.app.use('/api/msu/movies', router);
-
-        this.loadChild(LegacyModule);
     }
 }
 

@@ -5,7 +5,9 @@ enum CacheKey {
     foodTruckMenu,
     foodTruckHtml,
     foodTruckStops,
-    movieNightShowings
+    foodTruckLegacy,
+    movieNightShowings,
+    movieNightLegacy
 }
 
 const cache = new ExpiringCache<CacheKey, any>();

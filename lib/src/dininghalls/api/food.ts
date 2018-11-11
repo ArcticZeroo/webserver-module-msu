@@ -4,7 +4,7 @@ import * as dateFormat from 'dateformat';
 import WebserverModule from '@arcticzeroo/webserver-module';
 
 import request from '../../common/retryingRequest';
-import * as config from '../../../../config';
+import * as config from '../../../config/';
 import { Meal, MealIdentifier } from '../enum';
 import HallStorageModule from '../hall-storage';
 import { DiningHall } from './halls';

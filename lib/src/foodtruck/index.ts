@@ -2,11 +2,10 @@ import * as express from 'express';
 import * as cheerio from 'cheerio';
 
 import WebserverModule from '@arcticzeroo/webserver-module';
-import config from '../../../config';
+import config from '../../config/';
 import DateUtil from '../util/DateUtil';
 import { cache, CacheKey, handleEndpoint } from '../cache';
 import request from '../common/retryingRequest';
-import LegacyModule from './legacy';
 
 import FoodTruckMenuModule from './menu';
 
@@ -102,6 +101,5 @@ export default class FoodTruckModule extends WebserverModule {
         this.app.use('/api/msu/foodtruck/', router);
 
         this.loadChild(FoodTruckMenuModule);
-        this.loadChild(LegacyModule);
     }
 }

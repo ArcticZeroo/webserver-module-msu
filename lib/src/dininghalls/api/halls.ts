@@ -1,4 +1,4 @@
-import config from '../../../../config';
+import config from '../../../config/';
 import request from '../../common/retryingRequest';
 import * as cheerio from 'cheerio';
 

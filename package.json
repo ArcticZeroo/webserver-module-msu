@@ -19,7 +19,6 @@
   "dependencies": {
     "@arcticzeroo/duration": "^1.0.0",
     "@arcticzeroo/webserver-module": "^1.0.5",
-    "actions-on-google": "^2.3.0",
     "cheerio": "^1.0.0-rc.2",
     "dateformat": "^3.0.3",
     "expiring-cache": "^1.0.0",

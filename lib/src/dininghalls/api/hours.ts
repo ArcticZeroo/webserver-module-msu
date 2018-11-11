@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import * as config from '../../../../config';
+import * as config from '../../../config/';
 import request from '../../common/retryingRequest';
 import { DiningHall } from './halls';
 const { Meal } = require('../enum');

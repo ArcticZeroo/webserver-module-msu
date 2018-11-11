@@ -1,4 +1,4 @@
-module.exports = {
+const config = {
     pages: {
         FOOD_TRUCK: 'https://eatatstate.msu.edu/campus-dining/foodtruck',
         MOVIE_NIGHT: 'http://rha.msu.edu/programs/campus-center-cinemas.html',
@@ -9,3 +9,5 @@ module.exports = {
         UAB_EVENT_BASE: 'https://uabevents.com'
     }
 };
+
+export default config;
