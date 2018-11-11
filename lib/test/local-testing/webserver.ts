@@ -1,6 +1,9 @@
 import RootModule from '../../../';
 import * as express from 'express';
 
+declare var DEVELOPMENT: boolean;
+global.DEVELOPMENT = true;
+
 const app = express();
 
 new RootModule({

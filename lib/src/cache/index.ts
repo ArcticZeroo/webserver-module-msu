@@ -28,7 +28,7 @@ const handleEndpoint = (key: CacheKey, fetch: () => Promise<any>, module?: Webse
 
                 if (module) {
                     module.log.error(`Error in endpoint ${req.route.path}:`);
-                    module.log(e);
+                    module.log.error(e);
                 }
             });
     };

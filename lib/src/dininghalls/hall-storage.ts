@@ -3,6 +3,8 @@ import MongoUtil from '../util/MongoUtil';
 import WebserverModule from '@arcticzeroo/webserver-module/WebserverModule';
 import { retrieveDiningHallHours } from './api/hours';
 
+declare var DEVELOPMENT: boolean;
+
 export default class HallStorageModule extends WebserverModule {
     private cache: DiningHall[];
 
@@ -104,19 +106,21 @@ export default class HallStorageModule extends WebserverModule {
             return this.cache;
         }
 
-        this.log.debug('Getting from this.db...');
-        let dbHalls;
-        try {
-            dbHalls = await this.retrieveFromDb();
-        } catch (e) {
-            this.log.error(e);
-            throw e;
-        }
+        if (!DEVELOPMENT) {
+            this.log.debug('Getting from this.db...');
+            let dbHalls;
+            try {
+                dbHalls = await this.retrieveFromDb();
+            } catch (e) {
+                this.log.error(e);
+                throw e;
+            }
 
-        if (dbHalls.length) {
-            this.log.debug('There are halls in the db, returning');
-            // @ts-ignore
-            return dbHalls.map(diningHall => MongoUtil.cleanProperties(this.db.schemas.MsuDiningHall, diningHall));
+            if (dbHalls.length) {
+                this.log.debug('There are halls in the db, returning');
+                // @ts-ignore
+                return dbHalls.map(diningHall => MongoUtil.cleanProperties(this.db.schemas.MsuDiningHall, diningHall));
+            }
         }
 
         this.log.debug('Getting from web');
