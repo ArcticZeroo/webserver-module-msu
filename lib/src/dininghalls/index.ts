@@ -36,7 +36,7 @@ export default class DiningHallModule extends WebserverModule {
     start(): void {
         const router = express.Router();
 
-        router.get('/list', handleEndpoint(CacheKey.diningHallList, this.hallStorage.retrieve, this));
+        router.get('/list', handleEndpoint(CacheKey.diningHallList, () => this.hallStorage.retrieve(), this));
 
         router.get('/menu/all/:date/', (req, res) => {
             const { date } = req.params;
