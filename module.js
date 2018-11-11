@@ -10,7 +10,7 @@ class MsuRootModule extends webserver_module_1.default {
             require('./lib/src/dininghalls'),
             require('./lib/src/foodtruck'),
             require('./lib/src/movies'),
-            require('./lib/src/events')
+            require('./lib/src/events/index')
         ]) {
             this.loadChild(child);
         }

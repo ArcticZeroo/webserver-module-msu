@@ -1,19 +1,22 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const webserver_module_1 = require("@arcticzeroo/webserver-module");
-const express = require("express");
-class EventsModule extends webserver_module_1.default {
+import WebserverModule from '@arcticzeroo/webserver-module';
+import * as express from 'express';
+
+class EventsModule extends WebserverModule {
     constructor(data) {
         //TODO: Add this behavior to webserver module package itself
         // Child classes will now only have to route to their desired path, not /api/msu/events, when they use app
         const router = express.Router();
         data.app.use('/api/msu/events', router);
         data.app = router;
+
         super(data);
+
         this.loadChild(require('./uab/index'));
     }
-    start() {
+
+    start(): void {
+
     }
 }
+
 module.exports = EventsModule;
-//# sourceMappingURL=index.js.map

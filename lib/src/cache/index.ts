@@ -7,7 +7,8 @@ enum CacheKey {
     foodTruckStops,
     foodTruckLegacy,
     movieNightShowings,
-    movieNightLegacy
+    movieNightLegacy,
+    uabEvents
 }
 
 const cache = new ExpiringCache<CacheKey, any>();
