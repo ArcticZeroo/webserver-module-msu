@@ -1,35 +1,13 @@
 import * as cheerio from 'cheerio';
 import * as config from '../../../config/';
+import IDiningHallBase from '../../../models/dining-halls/IDiningHallBase';
+import IMealHours from '../../../models/dining-halls/IMealHours';
 import request from '../../common/retryingRequest';
-import { DiningHall } from './halls';
 const { Meal } = require('../enum');
 
 // Begin, end should be a number representing the hour of the day in 24h format
 // e.g. 7am would be 7.0, 4pm would be 16.0 and 4:30pm would be 16.5
 // 12am on the day of would be 0.0, 12am on the next would be 24.0
-
-interface HoursForMeal {
-    closed: boolean;
-    begin?: number;
-    end?: number;
-    limitedMenuBegin?: number;
-    grillClosesAt?: number;
-    // The meal as an index
-    meal: number;
-    extra?: string;
-    closeTimes?: {
-        [name: string]: number
-    };
-    openTimes?: {
-        [name: string]: number
-    };
-}
-
-interface HallHoursStruct {
-    monday: HoursForMeal[];
-    tuesday: HoursForMeal[];
-    // ...
-}
 
 const DAYS: string[] = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
@@ -94,7 +72,7 @@ function parseOnlyTimeString(timeStr: string): { start: number, end: number } {
     };
 }
 
-function parseSingleData(rawData: string, meal: number): HoursForMeal {
+function parseSingleData(rawData: string, meal: number): IMealHours {
     rawData = rawData.trim().toLowerCase();
 
     if (rawData.startsWith('closed')) {
@@ -111,7 +89,7 @@ function parseSingleData(rawData: string, meal: number): HoursForMeal {
 
     const { start, end } = parseOnlyTimeString(time);
 
-    const hoursObject: HoursForMeal = { closed: false, begin: start, end, meal, closeTimes: {}, openTimes: {} };
+    const hoursObject: IMealHours = { closed: false, begin: start, end, meal, closeTimes: {}, openTimes: {} };
 
     if (extra) {
         const extraPieces = extra.split(';').map(p => p.trim());
@@ -156,7 +134,7 @@ function parseSingleData(rawData: string, meal: number): HoursForMeal {
     return hoursObject;
 }
 
-function parseConstantTime(data): HoursForMeal[] {
+function parseConstantTime(data): IMealHours[] {
     const parsed = [];
 
     for (let i = 0; i < data.length; i++) {
@@ -269,7 +247,7 @@ function parseTimeData(data) {
     return parsedHours;
 }
 
-async function retrieveDiningHallHours(diningHalls: DiningHall[]): Promise<{ [searchName: string]: HoursForMeal }> {
+async function retrieveDiningHallHours(diningHalls: IDiningHallBase[]): Promise<{ [searchName: string]: IMealHours }> {
     let body;
     try {
         body = await request(config.pages.EAT_AT_STATE + config.pages.DINING_HALL_HOURS);

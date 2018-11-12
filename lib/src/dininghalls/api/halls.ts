@@ -1,15 +1,9 @@
 import * as config from '../../../config/';
+import IDiningHallBase from '../../../models/dining-halls/IDiningHallBase';
 import request from '../../common/retryingRequest';
 import * as cheerio from 'cheerio';
 
 const NAME_FROM_URL = new RegExp(`^${config.pages.DINING_HALL_MENU}(.+?)/all`);
-
-interface DiningHall {
-    hallName: string;
-    searchName: string;
-    brandName: string;
-    fullName: string;
-}
 
 /**
  * Make a request to the MSU eat at state homepage, to parse all dining hall primary data from it.
@@ -21,7 +15,7 @@ interface DiningHall {
  * Usually you will want to represent a hall with the fullName.
  * @returns {Promise<Array.<Object>>}
  */
-async function retrieveDiningHalls(): Promise<DiningHall[]> {
+async function retrieveDiningHalls(): Promise<IDiningHallBase[]> {
     let body;
     try {
         body = await request(config.pages.EAT_AT_STATE);
@@ -73,4 +67,4 @@ async function retrieveDiningHalls(): Promise<DiningHall[]> {
     return diningHalls;
 }
 
-export { DiningHall, retrieveDiningHalls }
+export { retrieveDiningHalls }

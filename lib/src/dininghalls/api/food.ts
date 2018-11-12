@@ -2,12 +2,12 @@ import * as cheerio from 'cheerio';
 import ExpiringCache from 'expiring-cache';
 import * as dateFormat from 'dateformat';
 import WebserverModule from '@arcticzeroo/webserver-module';
+import IDiningHallBase from '../../../models/dining-halls/IDiningHallBase';
 
 import request from '../../common/retryingRequest';
 import * as config from '../../../config/';
 import { Meal, MealIdentifier } from '../enum';
 import HallStorageModule from '../hall-storage';
-import { DiningHall } from './halls';
 
 interface MenuItem {
     name: string,
@@ -27,7 +27,7 @@ interface DiningHallMenu {
 }
 
 interface MenuSelection {
-    diningHall: DiningHall,
+    diningHall: IDiningHallBase,
     menuDate: MenuDate,
     meal: number // from MealIdentifier
 }
@@ -183,7 +183,7 @@ class FoodModule extends WebserverModule {
         return { closed: false, venues };
     }
 
-    retrieveMenu(diningHall: DiningHall, menuDate: MenuDate, meal: number): Promise<DiningHallMenu> {
+    retrieveMenu(diningHall: IDiningHallBase, menuDate: MenuDate, meal: number): Promise<DiningHallMenu> {
         return this.cache.getEntry(FoodModule.serializeToKey({ diningHall, menuDate, meal }));
     }
 
