@@ -1,9 +1,9 @@
 import WebserverModule from '@arcticzeroo/webserver-module';
 import Duration from '@arcticzeroo/duration';
-import { DiningHall } from './api/halls';
+import IDiningHallWithHours from '../../models/dining-halls/IDiningHallWithHours';
 
 import { Meal, MealIdentifier } from './enum';
-import { MenuDate } from './api/food';
+import { FoodModule, MenuDate } from './api/food';
 import HallStorageModule from './hall-storage';
 
 const timeBetweenRequests = new Duration({ seconds: 5 });
@@ -17,23 +17,34 @@ const DAYS_TO_COLLECT = {
 
 export default class UpdaterModule extends WebserverModule {
     private _hallStorage: HallStorageModule;
+    private _foodModule: FoodModule;
 
-    constructor(data) {
+    constructor(data: any) {
         super(data);
 
         this._hallStorage = data.hallStorage;
+        this._foodModule = data.foodModule;
     }
 
-    async loadHall(diningHall: DiningHall, date: Date) {
+    async loadHall(diningHall: IDiningHallWithHours, date: Date) {
         const mealKeys = Object.keys(Meal);
 
         for (let meal = 0; meal < mealKeys.length; ++meal) {
+            if (diningHall.hours[/* TODO: some expression about the current day */].closed) {
+                continue;
+            }
 
+            let menu: DiningHallMenu;
+            try {
+                await this._foodModule.retrieveDiningHallMenuFromWeb({ diningHall, meal, menuDate: new MenuDate(date) });
+            } catch (e) {
+                throw e;
+            }
         }
     }
 
     async loadDay(date: Date) {
-        let diningHalls: DiningHall[];
+        let diningHalls: IDiningHallWithHours[];
         try {
             diningHalls = await this._hallStorage.retrieve();
         } catch (e) {

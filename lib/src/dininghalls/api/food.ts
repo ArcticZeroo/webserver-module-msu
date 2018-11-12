@@ -3,34 +3,13 @@ import ExpiringCache from 'expiring-cache';
 import * as dateFormat from 'dateformat';
 import WebserverModule from '@arcticzeroo/webserver-module';
 import IDiningHallBase from '../../../models/dining-halls/IDiningHallBase';
+import IDiningHallMenu from '../../../models/dining-halls/menu/IDiningHallMenu';
+import IMenuSelection from '../../../models/dining-halls/menu/IMenuSelection';
 
 import request from '../../common/retryingRequest';
 import * as config from '../../../config/';
 import { Meal, MealIdentifier } from '../enum';
 import HallStorageModule from '../hall-storage';
-
-interface MenuItem {
-    name: string,
-    preferences: string[],
-    allergens: string[]
-}
-
-interface FoodVenue {
-    name: string,
-    description: string,
-    menu: MenuItem[]
-}
-
-interface DiningHallMenu {
-    closed: boolean,
-    venues: FoodVenue[]
-}
-
-interface MenuSelection {
-    diningHall: IDiningHallBase,
-    menuDate: MenuDate,
-    meal: number // from MealIdentifier
-}
 
 class MenuDate {
     private date: Date;
@@ -73,7 +52,7 @@ class FoodModule extends WebserverModule {
      * with dynamic keys but static fetch methods, vs the per item cache which requires a key to be registered
      * beforehand since each key has its own fetch method
      */
-    private cache: ExpiringCache<string, DiningHallMenu>;
+    private cache: ExpiringCache<string, IDiningHallMenu>;
     private storage: HallStorageModule;
 
     constructor(data) {
@@ -82,16 +61,16 @@ class FoodModule extends WebserverModule {
         this.storage = data.storage;
 
         this.cache = new ExpiringCache(
-            async key => this.getDiningHallMenu(await this.deserializeFromKey(key)),
+            async key => this.retrieveDiningHallMenuFromWeb(await this.deserializeFromKey(key)),
             12 * 60 * 60 * 1000
         );
     }
 
-    static serializeToKey({ diningHall, menuDate, meal } : MenuSelection): string {
+    static serializeToKey({ diningHall, menuDate, meal } : IMenuSelection): string {
         return [diningHall.searchName, menuDate.getFormatted(), meal].join('|');
     }
 
-    async deserializeFromKey(key: string): Promise<MenuSelection> {
+    async deserializeFromKey(key: string): Promise<IMenuSelection> {
         const [searchName, date, meal] = key.split('|');
 
         let diningHall;
@@ -104,11 +83,11 @@ class FoodModule extends WebserverModule {
         return { diningHall, menuDate: MenuDate.fromFormatted(date), meal: parseInt(meal) };
     }
 
-    static getRequestUrl({ diningHall, menuDate, meal } : MenuSelection): string {
+    static getRequestUrl({ diningHall, menuDate, meal } : IMenuSelection): string {
         return encodeURI(`${config.pages.EAT_AT_STATE + config.pages.DINING_HALL_MENU + diningHall.fullName}/all/${menuDate.getFormatted()}?field_mealtime_target_id=${MealIdentifier.getByIndex(meal)}`);
     }
 
-    async getDiningHallMenu({ diningHall, menuDate, meal } : MenuSelection): Promise<DiningHallMenu> {
+    async retrieveDiningHallMenuFromWeb({ diningHall, menuDate, meal } : IMenuSelection): Promise<IDiningHallMenu> {
         const url = FoodModule.getRequestUrl({ diningHall, menuDate, meal });
 
         let body;
@@ -183,8 +162,12 @@ class FoodModule extends WebserverModule {
         return { closed: false, venues };
     }
 
-    retrieveMenu(diningHall: IDiningHallBase, menuDate: MenuDate, meal: number): Promise<DiningHallMenu> {
+    retrieveMenu(diningHall: IDiningHallBase, menuDate: MenuDate, meal: number): Promise<IDiningHallMenu> {
         return this.cache.getEntry(FoodModule.serializeToKey({ diningHall, menuDate, meal }));
+    }
+
+    cacheMenu(menuSelection: IMenuSelection, menu: IDiningHallMenu) {
+        this.cache.set(FoodModule.serializeToKey(menuSelection), menu);
     }
 
     static IDENTIFIER: string = 'foodModule';

@@ -1,4 +1,5 @@
-import { DiningHall, retrieveDiningHalls } from './api/halls';
+import IDiningHallWithHours from '../../models/dining-halls/IDiningHallWithHours';
+import { retrieveDiningHalls } from './api/halls';
 import MongoUtil from '../util/MongoUtil';
 import WebserverModule from '@arcticzeroo/webserver-module/WebserverModule';
 import { retrieveDiningHallHours } from './api/hours';
@@ -6,7 +7,7 @@ import { retrieveDiningHallHours } from './api/hours';
 declare var DEVELOPMENT: boolean;
 
 export default class HallStorageModule extends WebserverModule {
-    private cache: DiningHall[];
+    private cache: IDiningHallWithHours[];
 
     constructor(data) {
         super({ ...data, name: HallStorageModule.IDENTIFIER });
@@ -37,7 +38,7 @@ export default class HallStorageModule extends WebserverModule {
         });
     }
 
-    async retrieveFromWeb(): Promise<DiningHall[]> {
+    async retrieveFromWeb(): Promise<IDiningHallWithHours[]> {
         let diningHalls;
         try {
             diningHalls = await retrieveDiningHalls();
@@ -74,7 +75,7 @@ export default class HallStorageModule extends WebserverModule {
         return processedDiningHalls;
     }
 
-    async retrieveAndSaveFromWeb(): Promise<DiningHall[]> {
+    async retrieveAndSaveFromWeb(): Promise<IDiningHallWithHours[]> {
         let diningHalls;
         try {
             diningHalls = await this.retrieveFromWeb();
@@ -99,7 +100,7 @@ export default class HallStorageModule extends WebserverModule {
         return diningHalls;
     }
 
-    async retrieve(respectCache = true): Promise<DiningHall[]> {
+    async retrieve(respectCache = true): Promise<IDiningHallWithHours[]> {
         this.log.debug('Retrieving halls...');
 
         if (this.cache && respectCache) {
@@ -135,7 +136,7 @@ export default class HallStorageModule extends WebserverModule {
         return this.retrieveAndSaveFromWeb().then(d => this.cache = d);
     }
 
-    async findBySearchName(search): Promise<DiningHall> {
+    async findBySearchName(search): Promise<IDiningHallWithHours> {
         let diningHalls;
         try {
             diningHalls = await this.retrieve();

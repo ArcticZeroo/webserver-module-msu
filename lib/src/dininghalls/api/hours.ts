@@ -94,6 +94,8 @@ function parseSingleData(rawData: string, meal: number): IMealHours {
     if (extra) {
         const extraPieces = extra.split(';').map(p => p.trim());
 
+        // TODO: Fix limited menu begin, currently sets it to null
+
         let shouldAddExtra: boolean = true;
         for (const extraPiece of extraPieces) {
             if (LIMITED_MENU_REGEX.test(extraPiece)) {
