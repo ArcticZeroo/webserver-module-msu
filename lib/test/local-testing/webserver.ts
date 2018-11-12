@@ -1,8 +1,7 @@
 import RootModule from '../../../';
 import * as express from 'express';
 
-declare var DEVELOPMENT: boolean;
-global.DEVELOPMENT = true;
+eval('global.DEVELOPMENT = true;');
 
 const app = express();
 

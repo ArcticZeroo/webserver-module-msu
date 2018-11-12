@@ -35,7 +35,6 @@ const DAYS: string[] = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 
 
 // Weekdays and weekend according to msu's hours site
 const WEEKDAYS: string[] = DAYS.slice(DAYS.indexOf('monday'), DAYS.indexOf('thursday') + 1);
-const WEEKEND: string[] = [DAYS[DAYS.length - 1], DAYS[0]];
 
 const CRAZY_HOURS_REGEX: RegExp = /[ ]*(?:open\s+)?(.+?-.+?)(?:\s*on .+?)?[ ]*(?:\n|$|;|\((.+)\))/i;
 const LIMITED_MENU_REGEX: RegExp = /limited menu\s*(.+-.+)?/i;
@@ -175,6 +174,7 @@ function parseConstantTime(data): HoursForMeal[] {
 }
 
 function parseVaryingTime(data: string[]) {
+    // Holds rebuilt hours for Sunday and Mon-Th if they are separate
     const rebuilt = [[], []];
 
     let hasSplit = false;
@@ -184,7 +184,34 @@ function parseVaryingTime(data: string[]) {
 
         const split = rawData.split(';');
 
-        if (split.length === 1) {
+        // Some splits need to be corrected in the case of something like
+        // 5-8p.m. (riverwalk gril closes at 8; sparty's closes at ...)
+        // This is done by collecting all things inside parentheses and
+        // putting them in the same unit.
+        const correctedSplit = [];
+
+        for (let j = 0; j < split.length; j++) {
+            if (split[j].includes('(')) {
+                const pieces = [];
+
+                for (j; j < split.length; j++) {
+                    pieces.push(split[j]);
+
+                    if (split[j].includes(')')) {
+                        break;
+                    }
+                }
+
+                correctedSplit.push(pieces.join(';'));
+                continue;
+            }
+
+            correctedSplit.push(split[j]);
+        }
+
+        // If the times are the same for the entire sunday-thursday timeline,
+        // parse it once and then push it to both rebuilt items
+        if (correctedSplit.length === 1) {
             const parsed = parseSingleData(rawData, i);
 
             for (let j = 0; j < rebuilt.length; j++) {
@@ -195,7 +222,7 @@ function parseVaryingTime(data: string[]) {
         }
 
         for (let j = 0; j < 2; j++) {
-            rebuilt[j].push(split[j].trim());
+            rebuilt[j].push(correctedSplit[j].split(':').pop().trim());
         }
 
         hasSplit = true;
@@ -216,23 +243,22 @@ function parseTimeData(data) {
         parsedHours[day] = [];
     }
 
+    // Site now lists hours from Sun-Th, Friday, Sat
     const weekdayData = data[0];
     const fridayData = data[1];
-    const weekendData = data[2];
+    const saturdayData = data[2];
 
-    const weekdayParsed = parseConstantTime(weekdayData);
+    const saturdayParsed = parseConstantTime(saturdayData);
     const fridayParsed = parseConstantTime(fridayData);
-    const weekendParsed = parseVaryingTime(weekendData);
+    const [sundayParsed, weekdayParsed] = parseVaryingTime(weekdayData);
 
     for (const day of WEEKDAYS) {
         parsedHours[day] = weekdayParsed;
     }
 
+    parsedHours['sunday'] = sundayParsed;
     parsedHours['friday'] = fridayParsed;
-
-    for (let i = 0; i < weekendParsed.length; i++) {
-        parsedHours[WEEKEND[i]] = weekendParsed[i];
-    }
+    parsedHours['saturday'] = saturdayParsed;
 
     for (const day of Object.keys(parsedHours)) {
         while (parsedHours[day].length < Object.keys(Meal).length) {
@@ -275,24 +301,34 @@ async function retrieveDiningHallHours(diningHalls: DiningHall[]): Promise<{ [se
         // 0 will be M-Th
         // 1 will be Fri
         // 2 will be Sat-Sun
-        const timeSpansRaw = [];
+        const timeSpansRaw: (string[])[] = [];
 
         timeColumns.each(function () {
             const $column = $(this);
 
-            const timeElements = $column.find('p');
+            // Recently, they seem to have moved from putting the times inside
+            // <p> tags, and they're just in raw text. Best bet I think is to
+            // kill all the rest of the tags and then separate text on newline
+            const elementTypesToKill: string[] = ['p', 'div', 'h3'];
+
+            for (const selector of elementTypesToKill) {
+                const elements: Cheerio = $column.find(selector);
+
+                if (!elements) {
+                    continue;
+                }
+
+                elements.remove();
+            }
 
             // Hold the raw hours data
             // 0 will be Breakfast
             // 1 will be Lunch
             // 2 will be Dinner
             // 3 will be Late Night
+            // 4 will be Late Night (Snacks)
             // If any index does not exist, it is closed for that meal time
-            const timeDataRaw = [];
-
-            timeElements.each(function () {
-                timeDataRaw.push($(this).text());
-            });
+            const timeDataRaw: string[] = $column.text().split('\n').filter(i => i.trim().length != 0);
 
             timeSpansRaw.push(timeDataRaw);
         });
