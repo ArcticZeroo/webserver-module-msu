@@ -8,6 +8,8 @@ declare var DEVELOPMENT: boolean;
 
 export default class HallStorageModule extends WebserverModule {
     private cache: IDiningHallWithHours[];
+    private _initialized: boolean = false;
+    private _initializeHandlers: (() => any)[];
 
     constructor(data) {
         super({ ...data, name: HallStorageModule.IDENTIFIER });
@@ -17,8 +19,25 @@ export default class HallStorageModule extends WebserverModule {
         this.cache = null;
 
         this.db.once('open', () => {
-            this.retrieveAndUpdateCache().catch(console.error);
+            this.retrieveAndUpdateCache()
+                .then(() => {
+                    this._initialized = true;
+
+                    for (const handler of this._initializeHandlers) {
+                        handler();
+                    }
+                })
+                .catch(console.error);
         });
+    }
+
+    onReady(callback: () => any): void {
+        if (this._initialized) {
+            callback();
+            return;
+        }
+
+        this._initializeHandlers.push(callback);
     }
 
     async retrieveFromDb() {
