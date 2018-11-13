@@ -12,26 +12,30 @@ import { Meal, MealIdentifier } from '../enum';
 import HallStorageModule from '../hall-storage';
 
 class MenuDate {
-    private date: Date;
+    private _date: Date;
     
     constructor(initial?: Date) {
-        this.date = initial || new Date();
+        this._date = initial || new Date();
+    }
+
+    get date() {
+        return new Date(this._date);
     }
 
     getFormatted(): string {
-        return dateFormat(this.date, 'yyyy-mm-dd');
+        return dateFormat(this._date, 'yyyy-mm-dd');
     }
 
     forward(): void {
-        this.date.setDate(this.date.getDate() + 1);
+        this._date.setDate(this._date.getDate() + 1);
     }
 
     back(): void {
-        this.date.setDate(this.date.getDate() - 1);
+        this._date.setDate(this._date.getDate() - 1);
     }
 
     today(): void {
-        this.date = new Date();
+        this._date = new Date();
     }
 
     static fromFormatted(str: string): MenuDate {
