@@ -1,41 +1,47 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class MongoUtil {
-    static save(doc) {
+import { Model, Document } from 'mongoose';
+
+export default class MongoUtil {
+    static save(doc: Document): Promise<void> {
         return new Promise((resolve, reject) => {
             doc.save(err => {
                 if (err) {
                     reject(err);
                     return;
                 }
+
                 resolve();
             });
         });
     }
-    static remove(model, query = {}) {
+
+    static remove(model: Model<any>, query: {} = {}): Promise<void> {
         return new Promise((resolve, reject) => {
             model.remove(query, err => {
                 if (err) {
                     reject(err);
                     return;
                 }
+
                 resolve();
             });
         });
     }
-    static markAndSave(doc, ...props) {
+
+    static markAndSave(doc: Document, ...props: string[]): Promise<void> {
         for (const prop of props) {
             doc.markModified(prop);
         }
+
         return MongoUtil.save(doc);
     }
-    static cleanProperties(schema, source) {
+
+    static cleanProperties(schema: {}, source: {}): {} {
         const copy = {};
+
         for (const prop of Object.keys(schema)) {
             copy[prop] = source[prop];
         }
+
         return copy;
     }
 }
-exports.default = MongoUtil;
-//# sourceMappingURL=MongoUtil.js.map
