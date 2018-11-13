@@ -1,13 +1,19 @@
 import WebserverModule from '@arcticzeroo/webserver-module';
 import Duration from '@arcticzeroo/duration';
 import IDiningHallWithHours from '../../models/dining-halls/IDiningHallWithHours';
+import IDiningHallMenu from '../../models/dining-halls/menu/IDiningHallMenu';
+import IMenuSelection from '../../models/dining-halls/menu/IMenuSelection';
+import { DAYS } from '../util/DateUtil';
+import NodeUtil from '../util/NodeUtil';
+import PromiseUtil from '../util/PromiseUtil';
 
 import { Meal, MealIdentifier } from './enum';
 import { FoodModule, MenuDate } from './api/food';
 import HallStorageModule from './hall-storage';
 
-const timeBetweenRequests = new Duration({ seconds: 5 });
-const timeBetweenBatches = new Duration({ seconds: 30 });
+const timeBetweenRequests = new Duration({ seconds: 0.5 });
+const timeBetweenBatches = new Duration({ seconds: 5 });
+const timeBetweenLoadIntervals = new Duration({ minutes: 15 });
 
 // Collect the last day, and the next week
 const DAYS_TO_COLLECT = {
@@ -26,24 +32,39 @@ export default class UpdaterModule extends WebserverModule {
         this._foodModule = data.foodModule;
     }
 
-    async loadHall(diningHall: IDiningHallWithHours, date: Date) {
+    private async _updateMenu(diningHall: IDiningHallWithHours, date: Date, meal: number): Promise<void> {
+        if (diningHall.hours[DAYS[date.getDay()]].closed) {
+            return;
+        }
+
+        const menuDate = new MenuDate(date);
+        const menuSelection: IMenuSelection = { diningHall, meal, menuDate };
+
+        let menu: IDiningHallMenu;
+        try {
+            menu = await this._foodModule.retrieveDiningHallMenuFromWeb(menuSelection);
+        } catch (e) {
+            throw e;
+        }
+
+        this._foodModule.cacheMenu(menuSelection, menu);
+    }
+
+    async loadHallMealsForDay(diningHall: IDiningHallWithHours, date: Date) {
         const mealKeys = Object.keys(Meal);
 
         for (let meal = 0; meal < mealKeys.length; ++meal) {
-            if (diningHall.hours[/* TODO: some expression about the current day */].closed) {
+            try {
+                await this._updateMenu(diningHall, date, meal);
+            } catch (e) {
                 continue;
             }
 
-            let menu: DiningHallMenu;
-            try {
-                await this._foodModule.retrieveDiningHallMenuFromWeb({ diningHall, meal, menuDate: new MenuDate(date) });
-            } catch (e) {
-                throw e;
-            }
+            await PromiseUtil.pause(timeBetweenRequests);
         }
     }
 
-    async loadDay(date: Date) {
+    async loadAllMealsForDay(date: Date) {
         let diningHalls: IDiningHallWithHours[];
         try {
             diningHalls = await this._hallStorage.retrieve();
@@ -51,7 +72,15 @@ export default class UpdaterModule extends WebserverModule {
             throw e;
         }
 
+        for (const diningHall of diningHalls) {
+            try {
+                await this.loadHallMealsForDay(diningHall, date);
+            } catch (e) {
+                continue;
+            }
 
+            await PromiseUtil.pause(timeBetweenBatches);
+        }
     }
 
     async loadAll() {
@@ -61,11 +90,25 @@ export default class UpdaterModule extends WebserverModule {
             const date = new Date();
             date.setDate(date.getDate() + i);
 
+            try {
+                await this.loadAllMealsForDay(date);
+            } catch (e) {
+                continue;
+            }
 
+            await PromiseUtil.pause(timeBetweenBatches);
         }
     }
 
-    start(): void {
+    _doBatch() {
+        this.loadAll().catch(e => this.log.error(`Could not load menu batch: ${e}`));
+    }
 
+    _beginLoading() {
+        NodeUtil.setIntervalImmediate(() => this._doBatch(), timeBetweenLoadIntervals.inMilliseconds);
+    }
+
+    start(): void {
+        this._hallStorage.onReady(() => this._beginLoading());
     }
 }
