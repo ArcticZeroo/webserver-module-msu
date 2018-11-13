@@ -83,6 +83,22 @@ class DateUtil {
 
         return date;
     }
+
+    /**
+     * Get a query range for a given day. Intended to be used for a mongo query.
+     * @param date - The date to get a query range for
+     * @returns [inclusiveStart, exclusiveEnd]
+     */
+    static getQueryRange(date: Date = new Date()): [Date, Date] {
+        const start = new Date(date);
+        start.setHours(0, 0, 0, 0);
+
+        const end = new Date(start);
+        end.setDate(end.getDate() + 1);
+
+        return [start, end];
+    }
+
 }
 
 export { DAYS };
