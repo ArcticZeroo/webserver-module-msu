@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const webserver_module_1 = require("@arcticzeroo/webserver-module");
-const dininghalls_1 = require("./lib/src/dininghalls");
-const events_1 = require("./lib/src/events");
-const foodtruck_1 = require("./lib/src/foodtruck");
-const movies_1 = require("./lib/src/movies");
+const dininghalls_1 = require("./lib/src/submodules/dininghalls");
+const events_1 = require("./lib/src/submodules/events");
+const foodtruck_1 = require("./lib/src/submodules/foodtruck");
+const movies_1 = require("./lib/src/submodules/movies");
 class MsuRootModule extends webserver_module_1.default {
     constructor(data) {
         super({ ...data, name: MsuRootModule.IDENTIFIER });

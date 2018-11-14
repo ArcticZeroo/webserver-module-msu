@@ -1,9 +1,9 @@
 import WebserverModule from '@arcticzeroo/webserver-module';
 
-import DiningHallModule from './lib/src/dininghalls';
-import EventsModule from './lib/src/events';
-import FoodTruckModule from './lib/src/foodtruck';
-import MovieModule from './lib/src/movies';
+import DiningHallModule from './lib/src/submodules/dininghalls';
+import EventsModule from './lib/src/submodules/events';
+import FoodTruckModule from './lib/src/submodules/foodtruck';
+import MovieModule from './lib/src/submodules/movies';
 
 
 class MsuRootModule extends WebserverModule {
