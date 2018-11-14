@@ -1,5 +1,5 @@
 import * as config from '../../../../config/index';
-import IDiningHallBase from '../../../models/dining-halls/IDiningHallBase';
+import IDiningHallBase from '../../../interfaces/dining-halls/IDiningHallBase';
 import request from '../../../common/retryingRequest';
 import * as cheerio from 'cheerio';
 

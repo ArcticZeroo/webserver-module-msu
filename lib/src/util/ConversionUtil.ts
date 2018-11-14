@@ -1,5 +1,5 @@
 import Identifiers from '../enum/RegexIdentifier';
-import IConvertedMovie from '../models/movies/IConvertedMovie';
+import IConvertedMovie from '../interfaces/movies/IConvertedMovie';
 const StringUtil = require('./StringUtil');
 const DateUtil = require('./DateUtil');
 

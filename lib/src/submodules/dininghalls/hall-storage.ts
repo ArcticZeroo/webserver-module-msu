@@ -1,4 +1,4 @@
-import IDiningHallWithHours from '../../models/dining-halls/IDiningHallWithHours';
+import IDiningHallWithHours from '../../interfaces/dining-halls/IDiningHallWithHours';
 import { retrieveDiningHalls } from './api/halls';
 import MongoUtil from '../../util/MongoUtil';
 import WebserverModule from '@arcticzeroo/webserver-module/WebserverModule';

@@ -1,4 +1,4 @@
-import IUabEvent from '../../../models/events/IUabEvent';
+import IUabEvent from '../../../interfaces/events/IUabEvent';
 import { handleEndpoint, CacheKey } from '../../../cache/index';
 
 import * as express from 'express';

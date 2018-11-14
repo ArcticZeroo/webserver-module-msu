@@ -2,9 +2,9 @@ import * as cheerio from 'cheerio';
 import ExpiringCache from 'expiring-cache';
 import * as dateFormat from 'dateformat';
 import WebserverModule from '@arcticzeroo/webserver-module';
-import IDiningHallBase from '../../../models/dining-halls/IDiningHallBase';
-import IDiningHallMenu from '../../../models/dining-halls/menu/IDiningHallMenu';
-import IMenuSelection from '../../../models/dining-halls/menu/IMenuSelection';
+import IDiningHallBase from '../../../interfaces/dining-halls/IDiningHallBase';
+import IDiningHallMenu from '../../../interfaces/dining-halls/menu/IDiningHallMenu';
+import IMenuSelection from '../../../interfaces/dining-halls/menu/IMenuSelection';
 
 import request from '../../../common/retryingRequest';
 import * as config from '../../../../config/index';

@@ -1,8 +1,8 @@
 import WebserverModule from '@arcticzeroo/webserver-module';
 import Duration from '@arcticzeroo/duration';
-import IDiningHallWithHours from '../../models/dining-halls/IDiningHallWithHours';
-import IDiningHallMenu from '../../models/dining-halls/menu/IDiningHallMenu';
-import IMenuSelection from '../../models/dining-halls/menu/IMenuSelection';
+import IDiningHallWithHours from '../../interfaces/dining-halls/IDiningHallWithHours';
+import IDiningHallMenu from '../../interfaces/dining-halls/menu/IDiningHallMenu';
+import IMenuSelection from '../../interfaces/dining-halls/menu/IMenuSelection';
 import { DAYS } from '../../util/DateUtil';
 import NodeUtil from '../../util/NodeUtil';
 import PromiseUtil from '../../util/PromiseUtil';

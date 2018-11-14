@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio';
 import * as config from '../../../../config/index';
-import IDiningHallBase from '../../../models/dining-halls/IDiningHallBase';
-import IMealHours from '../../../models/dining-halls/IMealHours';
+import IDiningHallBase from '../../../interfaces/dining-halls/IDiningHallBase';
+import IMealHours from '../../../interfaces/dining-halls/IMealHours';
 import request from '../../../common/retryingRequest';
 const { Meal } = require('../enum');
 
