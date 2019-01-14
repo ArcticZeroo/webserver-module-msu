@@ -1,7 +1,7 @@
-import IDiningHallWithHours from '../../interfaces/dining-halls/IDiningHallWithHours';
+import IDiningHallWithHours from '../../../interfaces/dining-halls/IDiningHallWithHours';
 import { retrieveDiningHalls } from './api/halls';
 import MongoUtil from '../../util/MongoUtil';
-import WebserverModule from '@arcticzeroo/webserver-module/WebserverModule';
+import WebserverModule from '@arcticzeroo/webserver-module';
 import { retrieveDiningHallHours } from './api/hours';
 
 declare var DEVELOPMENT: boolean;
@@ -11,7 +11,7 @@ export default class HallStorageModule extends WebserverModule {
     private _initialized: boolean = false;
     private _initializeHandlers: (() => any)[];
 
-    constructor(data) {
+    constructor(data: IWebserverModuleParams) {
         super({ ...data, name: HallStorageModule.IDENTIFIER });
     }
 

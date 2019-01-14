@@ -1,5 +1,5 @@
+import express, { Request, Response } from 'express';
 import RootModule from '../../../';
-import * as express from 'express';
 
 eval('global.DEVELOPMENT = true;');
 
@@ -11,6 +11,6 @@ new RootModule({
     name: 'Test Module'
 });
 
-app.use((req, res) => res.status(404).send('404 Not Found'));
+app.use((req: Request, res: Response) => res.status(404).send('404 Not Found'));
 
 app.listen(3000, () => console.log('Listening on port 3000'));
