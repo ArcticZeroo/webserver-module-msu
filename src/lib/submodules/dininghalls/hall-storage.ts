@@ -1,12 +1,15 @@
 import IDiningHallWithHours from '../../../interfaces/dining-halls/IDiningHallWithHours';
+import { IDiningHallDocument } from '../../../models/dining-halls/hall/DiningHall';
 import { retrieveDiningHalls } from './api/halls';
 import MongoUtil from '../../util/MongoUtil';
-import WebserverModule from '@arcticzeroo/webserver-module';
+import WebserverModule, {IWebserverModuleParams} from '@arcticzeroo/webserver-module';
 import { retrieveDiningHallHours } from './api/hours';
+import { Connection, Model } from 'mongoose';
 
 declare var DEVELOPMENT: boolean;
 
 export default class HallStorageModule extends WebserverModule {
+    public db: Connection & { MsuDiningHall: Model<IDiningHallDocument> };
     private cache: IDiningHallWithHours[];
     private _initialized: boolean = false;
     private _initializeHandlers: (() => any)[];
@@ -26,6 +29,9 @@ export default class HallStorageModule extends WebserverModule {
                     for (const handler of this._initializeHandlers) {
                         handler();
                     }
+
+                    // Remove all array elements in-place
+                    this._initializeHandlers.splice(0);
                 })
                 .catch(console.error);
         });
@@ -40,7 +46,7 @@ export default class HallStorageModule extends WebserverModule {
         this._initializeHandlers.push(callback);
     }
 
-    async retrieveFromDb() {
+    async retrieveFromDb(): Promise<IDiningHallWithHours[]> {
         return new Promise((resolve, reject) => {
             // @ts-ignore
             this.db.MsuDiningHall.find({}, function (err, docs) {
@@ -106,7 +112,6 @@ export default class HallStorageModule extends WebserverModule {
         }
 
         for (const diningHall of diningHalls) {
-            // @ts-ignore
             const diningHallDoc = new this.db.MsuDiningHall(diningHall);
 
             try {
@@ -128,7 +133,7 @@ export default class HallStorageModule extends WebserverModule {
 
         if (!DEVELOPMENT) {
             this.log.debug('Getting from this.db...');
-            let dbHalls;
+            let dbHalls: IDiningHallWithHours[];
             try {
                 dbHalls = await this.retrieveFromDb();
             } catch (e) {
@@ -155,7 +160,7 @@ export default class HallStorageModule extends WebserverModule {
         return this.retrieveAndSaveFromWeb().then(d => this.cache = d);
     }
 
-    async findBySearchName(search): Promise<IDiningHallWithHours> {
+    async findBySearchName(search: string): Promise<IDiningHallWithHours> {
         let diningHalls;
         try {
             diningHalls = await this.retrieve();

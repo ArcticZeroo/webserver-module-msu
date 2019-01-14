@@ -18,14 +18,15 @@
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@arcticzeroo/eslint-config/-/eslint-config-1.0.6.tgz#c9970c14418385649fe61d9d793e213474e8ab11"
 
-"@arcticzeroo/webserver-module@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@arcticzeroo/webserver-module/-/webserver-module-1.0.6.tgz#d37a958c1902ce2a6977d9eb595e67c671354642"
+"@arcticzeroo/webserver-module@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@arcticzeroo/webserver-module/-/webserver-module-1.4.1.tgz#4563ef3169aa4a7e891a5ca53583570f3d8de080"
   dependencies:
+    "@arcticzeroo/collection" "^1.0.2"
     "@arcticzeroo/djs-collection" latest
     "@types/express" "^4.16.0"
     "@types/mongoose" "^5.3.1"
-    frozor-logger "^3.0.13"
+    frozor-logger "^3.0.17"
 
 "@types/body-parser@*":
   version "1.17.0"
@@ -326,6 +327,14 @@ chalk@^1.1.3:
 chalk@^2.0.0, chalk@^2.1.0:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.1.tgz#18c49ab16a037b6eb0152cc83e3471338215b66e"
+  dependencies:
+    ansi-styles "^3.2.1"
+    escape-string-regexp "^1.0.5"
+    supports-color "^5.3.0"
+
+chalk@^2.4.1:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.2.tgz#cd42541677a54333cf541a49108c1432b44c9424"
   dependencies:
     ansi-styles "^3.2.1"
     escape-string-regexp "^1.0.5"
@@ -825,11 +834,11 @@ fresh@0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
 
-frozor-logger@^3.0.13:
-  version "3.0.13"
-  resolved "https://registry.yarnpkg.com/frozor-logger/-/frozor-logger-3.0.13.tgz#a228c2fcad68644ae5694ac131b393eb7b786b45"
+frozor-logger@^3.0.17:
+  version "3.0.17"
+  resolved "https://registry.yarnpkg.com/frozor-logger/-/frozor-logger-3.0.17.tgz#f3d1b1fe9a66755c9b80638bcd0700ff78b730f3"
   dependencies:
-    chalk "^2.1.0"
+    chalk "^2.4.1"
     dateformat "^2.0.0"
     sanitize-filename "^1.6.1"
     winston "^2.3.1"
