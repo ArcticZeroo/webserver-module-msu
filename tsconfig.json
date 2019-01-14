@@ -3,9 +3,17 @@
     "module": "commonjs",
     "target": "esnext",
     "sourceMap": true,
-    "lib": ["es2018"]
+    "lib": ["es2018"],
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "noImplicitThis": true,
+    "suppressImplicitAnyIndexErrors": true
   },
   "exclude": [
     "node_modules"
+  ],
+  "include": [
+    "src"
   ]
 }
