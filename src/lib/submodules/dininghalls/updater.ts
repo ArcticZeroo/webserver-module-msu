@@ -1,6 +1,5 @@
 import WebserverModule from '@arcticzeroo/webserver-module';
 import Duration from '@arcticzeroo/duration';
-import { IWebserverModuleParams } from '@arcticzeroo/webserver-module/WebserverModule';
 import IDiningHallWithHours from '../../../interfaces/dining-halls/IDiningHallWithHours';
 import IDiningHallMenu from '../../../interfaces/dining-halls/menu/IDiningHallMenu';
 import IMenuSelection from '../../../interfaces/dining-halls/menu/IMenuSelection';
@@ -10,13 +9,12 @@ import { DAYS } from '../../util/DateUtil';
 import NodeUtil from '../../util/NodeUtil';
 import PromiseUtil from '../../util/PromiseUtil';
 
-import { Meal, MealIdentifier } from './enum';
-import { FoodModule, MenuDate } from './api/food';
-import HallStorageModule from './hall-storage';
+import { Meal } from './enum';
+import { MenuDate } from './api/food';
 
 const timeBetweenRequests = new Duration({ seconds: 0.5 });
-const timeBetweenBatches = new Duration({ seconds: 5 });
-const timeBetweenLoadIntervals = new Duration({ minutes: 15 });
+const timeBetweenSingleHallLoad = new Duration({ seconds: 5 });
+const timeBetweenLoadIntervals = new Duration({ hours: 1 });
 
 // Collect the last day, and the next week
 const DAYS_TO_COLLECT = {
@@ -72,7 +70,7 @@ export default class UpdaterModule extends WebserverModule<RequireHallStorageMod
                 continue;
             }
 
-            await PromiseUtil.pause(timeBetweenBatches);
+            await PromiseUtil.pause(timeBetweenSingleHallLoad);
         }
     }
 
@@ -89,7 +87,7 @@ export default class UpdaterModule extends WebserverModule<RequireHallStorageMod
                 continue;
             }
 
-            await PromiseUtil.pause(timeBetweenBatches);
+            await PromiseUtil.pause(timeBetweenSingleHallLoad);
         }
     }
 
