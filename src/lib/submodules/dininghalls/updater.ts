@@ -23,6 +23,10 @@ const DAYS_TO_COLLECT = {
 };
 
 export default class UpdaterModule extends WebserverModule<RequireHallStorageModule & RequireFoodModule> {
+    get name(): string {
+        return 'UpdaterModule';
+    }
+
     private async _updateMenu(diningHall: IDiningHallWithHours, date: Date, meal: number): Promise<void> {
         if (diningHall.hours[DAYS[date.getDay()]].closed) {
             return;
@@ -93,11 +97,13 @@ export default class UpdaterModule extends WebserverModule<RequireHallStorageMod
 
     _doBatch() {
         this.log.debug('Starting batch load');
-        this.loadAll().catch(e => this.log.error(`Could not load menu batch: ${e}`));
+        this.loadAll()
+            .then(() => this.log.info('Updated dining hall menus'))
+            .catch(e => this.log.error(`Could not load menu batch: ${e}`));
     }
 
     _beginLoading() {
-        this.log.debug('Beginning loading...');
+        this.log.info('Beginning loading...');
         NodeUtil.setIntervalImmediate(() => this._doBatch(), timeBetweenLoadIntervals.inMilliseconds);
     }
 
