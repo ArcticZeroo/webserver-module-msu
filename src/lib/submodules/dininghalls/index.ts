@@ -75,7 +75,7 @@ export default class DiningHallModule extends WebserverModule {
                     throw e;
                 }
 
-                res.json(hallMenus);
+                res.status(200).json(hallMenus);
             };
 
             go().catch(e => {
@@ -130,7 +130,7 @@ export default class DiningHallModule extends WebserverModule {
                     return res.status(500).json({ error: 'Internal Server Error' });
                 }
 
-                res.json(menuData);
+                res.status(200).json(menuData);
             };
 
             go().catch(e => {
@@ -192,7 +192,7 @@ export default class DiningHallModule extends WebserverModule {
                     return res.status(500).json({ error: 'Internal Server Error' });
                 }
 
-                res.json(menuData);
+                res.status(200).json(menuData);
             };
 
             go().catch(e => {
