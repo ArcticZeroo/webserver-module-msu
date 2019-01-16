@@ -1,5 +1,5 @@
-import * as config from '../../../../config/index';
-import IDiningHallBase from '../../../interfaces/dining-halls/IDiningHallBase';
+import * as config from '../../../../config';
+import IDiningHallBase from '../../../../interfaces/dining-halls/IDiningHallBase';
 import request from '../../../common/retryingRequest';
 import * as cheerio from 'cheerio';
 
@@ -26,10 +26,11 @@ async function retrieveDiningHalls(): Promise<IDiningHallBase[]> {
     const $ = cheerio.load(body);
 
     const nameSquares = $('.dining-menu-name');
-    const diningHalls = [];
+    const diningHalls: IDiningHallBase[] = [];
 
-    nameSquares.each(function() {
-        const $nameSquare = $(this);
+    nameSquares.each(function(index, element) {
+        // @ts-ignore
+        const $nameSquare = $(element);
 
         // Get the only a tag in this square, which would link to the menu,
         // and get its href for the url

@@ -1,8 +1,9 @@
 import WebserverModule from '@arcticzeroo/webserver-module';
 import Duration from '@arcticzeroo/duration';
-import IDiningHallWithHours from '../../interfaces/dining-halls/IDiningHallWithHours';
-import IDiningHallMenu from '../../interfaces/dining-halls/menu/IDiningHallMenu';
-import IMenuSelection from '../../interfaces/dining-halls/menu/IMenuSelection';
+import IDiningHallWithHours from '../../../interfaces/dining-halls/IDiningHallWithHours';
+import IDiningHallMenu from '../../../interfaces/dining-halls/menu/IDiningHallMenu';
+import IMenuSelection from '../../../interfaces/dining-halls/menu/IMenuSelection';
+import RequireHallStorageModule from '../../../interfaces/RequireHallStorageModule';
 import { DAYS } from '../../util/DateUtil';
 import NodeUtil from '../../util/NodeUtil';
 import PromiseUtil from '../../util/PromiseUtil';
@@ -21,7 +22,7 @@ const DAYS_TO_COLLECT = {
     end: 7
 };
 
-export default class UpdaterModule extends WebserverModule {
+export default class UpdaterModule extends WebserverModule<RequireHallStorageModule> {
     private _hallStorage: HallStorageModule;
     private _foodModule: FoodModule;
 

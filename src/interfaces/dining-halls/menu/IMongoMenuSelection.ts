@@ -1,4 +1,4 @@
-import { Meal } from '../../../submodules/dininghalls/enum';
+import { Meal } from '../../../lib/submodules/dininghalls/enum';
 
 export default interface IMongoMenuSelection {
     // Search name

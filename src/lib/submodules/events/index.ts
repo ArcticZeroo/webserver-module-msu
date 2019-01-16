@@ -1,6 +1,6 @@
 import WebserverModule from '@arcticzeroo/webserver-module';
 import * as express from 'express';
-import UabModule from './uab/index';
+import UabModule from './uab';
 
 export default class EventsModule extends WebserverModule {
     constructor(data) {

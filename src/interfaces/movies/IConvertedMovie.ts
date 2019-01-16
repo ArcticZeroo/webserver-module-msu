@@ -1,4 +1,4 @@
-import Identifiers from '../../enum/RegexIdentifier';
+import Identifiers from '../../lib/enum/RegexIdentifier';
 
 export default interface IConvertedMovie {
     [Identifiers.TEXT]: string;

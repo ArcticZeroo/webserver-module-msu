@@ -1,7 +1,7 @@
 import IMenuItem from './IMenuItem';
 
 export default interface IDiningHallVenue {
-    name: string;
+    venueName: string;
     description?: string;
     menu: IMenuItem[];
 }

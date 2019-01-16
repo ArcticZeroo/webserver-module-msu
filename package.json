@@ -18,22 +18,23 @@
   "homepage": "https://github.com/ArcticZeroo/webserver-module-msu#readme",
   "dependencies": {
     "@arcticzeroo/duration": "^1.0.0",
-    "@arcticzeroo/webserver-module": "^1.4.1",
+    "@arcticzeroo/webserver-module": "^1.5.0",
     "cheerio": "^1.0.0-rc.2",
     "dateformat": "^3.0.3",
     "expiring-cache": "^1.0.0",
     "expiring-per-item-cache": "^1.0.0",
-    "express": "^4.16.3",
     "request": "^2.88.0"
   },
   "devDependencies": {
     "@arcticzeroo/eslint-config": "latest",
     "@types/cheerio": "^0.22.9",
-    "@types/jquery": "^3.3.22",
+    "@types/dateformat": "^3.0.0",
+    "@types/jquery": "^3.3.29",
     "@types/mongodb": "^3.1.14",
     "@types/mongoose": "^5.3.1",
     "@types/node": "^10.12.5",
     "@types/request": "^2.48.1",
-    "eslint": "^5.0.1"
+    "eslint": "^5.0.1",
+    "express": "^4.16.4"
   }
 }

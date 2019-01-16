@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as cheerio from 'cheerio';
 
 import WebserverModule from '@arcticzeroo/webserver-module';
-import { cache, CacheKey, handleEndpoint } from '../../../cache/index';
+import { cache, CacheKey, handleEndpoint } from '../../../cache';
 
 const MENU_TITLE_REGEX = /^(.+?)\s+(?:service)?\s*menu(?: \| (.+?) ([\d-]+)(?:,\s+)?(\d+))?$/i;
 // text, name, month, dates, year

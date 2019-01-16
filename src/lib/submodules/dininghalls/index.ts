@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 import WebserverModule from '@arcticzeroo/webserver-module';
+import { IWebserverModuleParams } from '@arcticzeroo/webserver-module/WebserverModule';
 import * as express from 'express';
-import { CacheKey, handleEndpoint } from '../../cache/index';
+import { CacheKey, handleEndpoint } from '../../cache';
 import { FoodModule, MenuDate } from './api/food';
 import * as api from './enum';
 import HallStorageModule from './hall-storage';
@@ -11,7 +12,7 @@ import UpdaterModule from './updater';
 export default class DiningHallModule extends WebserverModule {
     static IDENFITIER: string = 'diningHallModule';
 
-    constructor(data) {
+    constructor(data: IWebserverModuleParams) {
         super({
             ...data,
             startByDefault: false,
@@ -19,18 +20,18 @@ export default class DiningHallModule extends WebserverModule {
         });
 
         for (const child of [ HallStorageModule, FoodModule, UpdaterModule ]) {
-            this.loadChild(child, { storage: this.hallStorage });
+            this.loadChild<{ storage: HallStorageModule }>(child, { storage: this.hallStorage });
         }
 
         this.start();
     }
 
     get hallStorage(): HallStorageModule {
-        return this.children.get(HallStorageModule.IDENTIFIER);
+        return this.children.get(HallStorageModule.IDENTIFIER) as HallStorageModule;
     }
 
     get food(): FoodModule {
-        return this.children.get(FoodModule.IDENTIFIER);
+        return this.children.get(FoodModule.IDENTIFIER) as FoodModule;
     }
 
     start(): void {

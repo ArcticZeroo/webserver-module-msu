@@ -1,10 +1,11 @@
+import { IWebserverModuleParams } from '@arcticzeroo/webserver-module/WebserverModule';
 import * as cheerio from 'cheerio';
 import * as express from 'express';
 
 import WebserverModule from '@arcticzeroo/webserver-module';
-import * as config from '../../../config/index';
+import * as config from '../../../config';
 import request from '../../common/retryingRequest';
-import { CacheKey, handleEndpoint } from '../../cache/index';
+import { CacheKey, handleEndpoint } from '../../cache';
 import ConversionUtil from '../../util/ConversionUtil';
 
 const router = express.Router();
@@ -33,7 +34,7 @@ async function getMovieShowings() {
             const title = $(titleElements[i]).text().trim();
             const showings = [];
             const groupedShowings = {};
-            const locations = [];
+            const locations: string[] = [];
 
             const showingsElements = showingsLists[i].children;
 
@@ -104,7 +105,7 @@ router.get('/list', handleEndpoint(CacheKey.movieNightShowings, getMovieShowings
 export default class MovieModule extends WebserverModule {
     static IDENTIFIER = 'Movie Night';
 
-    constructor(data) {
+    constructor(data: IWebserverModuleParams) {
         super({ ...data, name: MovieModule.IDENTIFIER });
     }
 

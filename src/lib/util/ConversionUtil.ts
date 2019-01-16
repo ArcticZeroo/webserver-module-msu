@@ -1,5 +1,6 @@
+import IMovieLocation from '../../interfaces/movies/IMovieLocation';
 import Identifiers from '../enum/RegexIdentifier';
-import IConvertedMovie from '../interfaces/movies/IConvertedMovie';
+import IConvertedMovie from '../../interfaces/movies/IConvertedMovie';
 const StringUtil = require('./StringUtil');
 const DateUtil = require('./DateUtil');
 
@@ -85,7 +86,7 @@ function extendConverted<D = {}>(obj: any): IConvertedObject & D {
     return obj;
 }
 
-class ConversionUtil {
+export default class ConversionUtil {
     /**
      *
      * @param {string} str - The string to convert
@@ -108,7 +109,7 @@ class ConversionUtil {
         return extendConverted(converted);
     }
 
-    static convertMovie(str) {
+    static convertMovie(str: string): IMovieLocation {
         let extra;
 
         const extraMatch = Conversions.EXTRA_DATA.regex.exec(str);
@@ -129,9 +130,9 @@ class ConversionUtil {
             converted[Identifiers.LOCATION] += ` ${extra}`;
         }
 
-        const movie = { location: converted[Identifiers.LOCATION], showtimes: [] };
+        const movie: IMovieLocation = { location: converted[Identifiers.LOCATION], showtimes: [] };
 
-        const showtimes = converted.showtimes.split(/\s*[,&]\s+/g);
+        const showtimes: string[] = converted.showtimes.split(/\s*[,&]\s+/g);
 
         const relevantDays: number[] = [];
         const parsedDate = converted.getDate();
@@ -169,5 +170,3 @@ class ConversionUtil {
         return movie;
     }
 }
-
-module.exports = ConversionUtil;

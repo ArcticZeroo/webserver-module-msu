@@ -1,11 +1,11 @@
 import IUabEvent from '../../../interfaces/events/IUabEvent';
-import { handleEndpoint, CacheKey } from '../../../cache/index';
+import { handleEndpoint, CacheKey } from '../../../cache';
 
 import * as express from 'express';
 import * as cheerio from 'cheerio';
 
 import WebserverModule from '@arcticzeroo/webserver-module';
-import * as config from '../../../../config/index';
+import * as config from '../../../../config';
 import request from '../../../common/retryingRequest';
 
 export default class UabModule extends WebserverModule {

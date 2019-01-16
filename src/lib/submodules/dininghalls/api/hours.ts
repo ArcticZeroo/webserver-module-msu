@@ -1,7 +1,8 @@
 import * as cheerio from 'cheerio';
-import * as config from '../../../../config/index';
-import IDiningHallBase from '../../../interfaces/dining-halls/IDiningHallBase';
-import IMealHours from '../../../interfaces/dining-halls/IMealHours';
+import * as config from '../../../../config';
+import IDiningHallBase from '../../../../interfaces/dining-halls/IDiningHallBase';
+import IDiningHallHours from '../../../../interfaces/dining-halls/IDiningHallHours';
+import IMealHours from '../../../../interfaces/dining-halls/IMealHours';
 import request from '../../../common/retryingRequest';
 const { Meal } = require('../enum');
 
@@ -136,7 +137,7 @@ function parseSingleData(rawData: string, meal: number): IMealHours {
     return hoursObject;
 }
 
-function parseConstantTime(data): IMealHours[] {
+function parseConstantTime(data: Array<IMealHours | string>): IMealHours[] {
     const parsed = [];
 
     for (let i = 0; i < data.length; i++) {
@@ -153,9 +154,9 @@ function parseConstantTime(data): IMealHours[] {
     return parsed;
 }
 
-function parseVaryingTime(data: string[]) {
+function parseVaryingTime(data: string[]): [IMealHours[], IMealHours[]] {
     // Holds rebuilt hours for Sunday and Mon-Th if they are separate
-    const rebuilt = [[], []];
+    const rebuilt: [Array<string | IMealHours>, Array<string | IMealHours>] = [[], []];
 
     let hasSplit = false;
 
@@ -213,11 +214,20 @@ function parseVaryingTime(data: string[]) {
         return [parsed, parsed];
     }
 
+    // @ts-ignore
     return rebuilt.map(parseConstantTime);
 }
 
-function parseTimeData(data) {
-    const parsedHours = {};
+function parseTimeData(data: Array<string[]>): IDiningHallHours {
+    const parsedHours: IDiningHallHours = {
+        sunday: null,
+        monday: null,
+        tuesday: null,
+        wednesday: null,
+        thursday: null,
+        friday: null,
+        saturday: null
+    };
 
     for (const day of DAYS) {
         parsedHours[day] = [];
@@ -249,7 +259,7 @@ function parseTimeData(data) {
     return parsedHours;
 }
 
-async function retrieveDiningHallHours(diningHalls: IDiningHallBase[]): Promise<{ [searchName: string]: IMealHours }> {
+async function retrieveDiningHallHours(diningHalls: IDiningHallBase[]): Promise<{ [key: string]: IDiningHallHours }> {
     let body;
     try {
         body = await request(config.pages.EAT_AT_STATE + config.pages.DINING_HALL_HOURS);
@@ -259,7 +269,7 @@ async function retrieveDiningHallHours(diningHalls: IDiningHallBase[]): Promise<
 
     const $ = cheerio.load(body);
 
-    const hours = {};
+    const hours: { [key: string]: IDiningHallHours } = {};
 
     for (const diningHall of diningHalls) {
         const expectedName = diningHall.fullName;
@@ -281,9 +291,10 @@ async function retrieveDiningHallHours(diningHalls: IDiningHallBase[]): Promise<
         // 0 will be M-Th
         // 1 will be Fri
         // 2 will be Sat-Sun
-        const timeSpansRaw: (string[])[] = [];
+        const timeSpansRaw: Array<string[]> = [];
 
         timeColumns.each(function () {
+            // @ts-ignore
             const $column = $(this);
 
             // Recently, they seem to have moved from putting the times inside

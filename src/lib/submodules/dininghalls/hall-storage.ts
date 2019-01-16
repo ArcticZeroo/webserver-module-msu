@@ -1,4 +1,6 @@
+import IDiningHallHours from '../../../interfaces/dining-halls/IDiningHallHours';
 import IDiningHallWithHours from '../../../interfaces/dining-halls/IDiningHallWithHours';
+import RequireHallStorageModule from '../../../interfaces/RequireHallStorageModule';
 import { IDiningHallDocument } from '../../../models/dining-halls/hall/DiningHall';
 import { retrieveDiningHalls } from './api/halls';
 import MongoUtil from '../../util/MongoUtil';
@@ -8,13 +10,13 @@ import { Connection, Model } from 'mongoose';
 
 declare var DEVELOPMENT: boolean;
 
-export default class HallStorageModule extends WebserverModule {
+export default class HallStorageModule extends WebserverModule<RequireHallStorageModule> {
     public db: Connection & { MsuDiningHall: Model<IDiningHallDocument> };
     private cache: IDiningHallWithHours[];
     private _initialized: boolean = false;
     private _initializeHandlers: (() => any)[];
 
-    constructor(data: IWebserverModuleParams) {
+    constructor(data: IWebserverModuleParams & RequireHallStorageModule) {
         super({ ...data, name: HallStorageModule.IDENTIFIER });
     }
 
@@ -71,14 +73,14 @@ export default class HallStorageModule extends WebserverModule {
             throw e;
         }
 
-        let diningHallHours;
+        let diningHallHours: { [key: string]: IDiningHallHours };
         try {
             diningHallHours = await retrieveDiningHallHours(diningHalls);
         } catch (e) {
             throw e;
         }
 
-        const processedDiningHalls = [];
+        const processedDiningHalls: IDiningHallWithHours[] = [];
 
         for (const searchName of Object.keys(diningHallHours)) {
             for (let i = 0; i < diningHalls.length; i++) {
@@ -86,9 +88,9 @@ export default class HallStorageModule extends WebserverModule {
 
                 if (hall.searchName === searchName) {
                     // Set the hours property on this hall
-                    hall.hours = diningHallHours[searchName];
+                    const hallWithHours = Object.assign({}, hall, { hours: diningHallHours[searchName] });
                     // Add to processed ones
-                    processedDiningHalls.push(hall);
+                    processedDiningHalls.push(hallWithHours);
                     // Remove it from the original list so we don't
                     // have to iterate as far (on average)
                     diningHalls.splice(i, 1);

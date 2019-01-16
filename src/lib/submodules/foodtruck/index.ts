@@ -2,12 +2,12 @@ import * as express from 'express';
 import * as cheerio from 'cheerio';
 
 import WebserverModule from '@arcticzeroo/webserver-module';
-import * as config from '../../../config/index';
+import * as config from '../../../config';
 import DateUtil from '../../util/DateUtil';
-import { cache, CacheKey, handleEndpoint } from '../../cache/index';
+import { cache, CacheKey, handleEndpoint } from '../../cache';
 import request from '../../common/retryingRequest';
 
-import FoodTruckMenuModule from './menu/index';
+import FoodTruckMenuModule from './menu';
 
 // TODO: Configured maps locations
 /*

@@ -1,13 +1,17 @@
-import * as cheerio from 'cheerio';
+import { IWebserverModuleParams } from '@arcticzeroo/webserver-module/WebserverModule';
+import cheerio from 'cheerio';
 import ExpiringCache from 'expiring-cache';
-import * as dateFormat from 'dateformat';
+import dateFormat from 'dateformat';
 import WebserverModule from '@arcticzeroo/webserver-module';
-import IDiningHallBase from '../../../interfaces/dining-halls/IDiningHallBase';
-import IDiningHallMenu from '../../../interfaces/dining-halls/menu/IDiningHallMenu';
-import IMenuSelection from '../../../interfaces/dining-halls/menu/IMenuSelection';
+import IDiningHallBase from '../../../../interfaces/dining-halls/IDiningHallBase';
+import IDiningHallMenu from '../../../../interfaces/dining-halls/menu/IDiningHallMenu';
+import IDiningHallVenue from '../../../../interfaces/dining-halls/menu/IDiningHallVenue';
+import IMenuItem from '../../../../interfaces/dining-halls/menu/IMenuItem';
+import IMenuSelection from '../../../../interfaces/dining-halls/menu/IMenuSelection';
+import RequireHallStorageModule from '../../../../interfaces/RequireHallStorageModule';
 
 import request from '../../../common/retryingRequest';
-import * as config from '../../../../config/index';
+import * as config from '../../../../config';
 import { Meal, MealIdentifier } from '../enum';
 import HallStorageModule from '../hall-storage';
 
@@ -50,7 +54,7 @@ class MenuDate {
     }
 }
 
-class FoodModule extends WebserverModule {
+class FoodModule extends WebserverModule<RequireHallStorageModule> {
     /**
      * Using a local cache instead of an expiring-per-item-cache because ExpiringCache allows for values to be retrieved
      * with dynamic keys but static fetch methods, vs the per item cache which requires a key to be registered
@@ -59,7 +63,7 @@ class FoodModule extends WebserverModule {
     private cache: ExpiringCache<string, IDiningHallMenu>;
     private storage: HallStorageModule;
 
-    constructor(data) {
+    constructor(data: IWebserverModuleParams & RequireHallStorageModule) {
         super({ ...data, name: FoodModule.IDENTIFIER, startByDefault: false });
 
         this.storage = data.storage;
@@ -111,10 +115,10 @@ class FoodModule extends WebserverModule {
 
         const places = $('.eas-list');
 
-        const venues = [];
+        const venues: IDiningHallVenue[] = [];
 
-        places.each(function() {
-            const $place = $(this);
+        places.each(function(index, element) {
+            const $place = $(element);
 
             let venueName = $($place.find('.venue-title')[0]).text();
             venueName = venueName[0].toUpperCase() + venueName.substr(1).toLowerCase();
@@ -125,19 +129,19 @@ class FoodModule extends WebserverModule {
 
             const menuItems = $place.find('.menu-item');
 
-            const menu = [];
+            const menu: IMenuItem[] = [];
 
-            menuItems.each(function() {
-                const $menuItem = $(this);
+            menuItems.each(function(index, element) {
+                const $menuItem = $(element);
 
                 const name = $($menuItem.find('.meal-title')[0]).text();
 
                 const diningPrefItems = $menuItem.find('.dining-prefs');
 
-                const diningPrefs = [];
+                const diningPrefs: string[] = [];
 
-                diningPrefItems.each(function() {
-                    const split = $(this).text().split(', ');
+                diningPrefItems.each(function(index, element) {
+                    const split = $(element).text().split(', ');
 
                     if (!split || !split.length || !split[0]) {
                         return;
@@ -147,7 +151,7 @@ class FoodModule extends WebserverModule {
                 });
 
                 const allergensRaw = $($menuItem.find('.allergens')[0]).text().trim();
-                let allergens = [];
+                let allergens: string[] = [];
 
                 if (allergensRaw.length) {
                     const split = allergensRaw.replace(/^contains:\s+/i, '').split(', ');
