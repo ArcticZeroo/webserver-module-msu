@@ -12,8 +12,6 @@ import PromiseUtil from '../../util/PromiseUtil';
 import {Meal, MealRange} from './enum';
 import { MenuDate } from './api/food';
 
-const timeBetweenRequests = new Duration({ milliseconds: 50 });
-const timeBetweenSingleDayLoad = new Duration({ seconds: 0.5 });
 const timeBetweenLoadIntervals = new Duration({ hours: 1 });
 
 // Collect the last day, and the next week
@@ -50,10 +48,9 @@ export default class UpdaterModule extends WebserverModule<RequireHallStorageMod
             try {
                 await this._updateMenu(diningHall, date, meal);
             } catch (e) {
-                continue;
+                this.log.error(`Failed to load menu for hall ${this.log.chalk.cyan(diningHall.searchName)} on date ${this.log.chalk.magenta(date.toLocaleDateString())}:`);
+                console.error(e);
             }
-
-            await PromiseUtil.pause(timeBetweenRequests);
         }
     }
 
@@ -92,8 +89,6 @@ export default class UpdaterModule extends WebserverModule<RequireHallStorageMod
             }
 
             this.log.debug(`Loaded day index ${i} for all dining halls`);
-
-            await PromiseUtil.pause(timeBetweenSingleDayLoad);
         }
     }
 
