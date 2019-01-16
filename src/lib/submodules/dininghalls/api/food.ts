@@ -14,6 +14,7 @@ import request from '../../../common/retryingRequest';
 import * as config from '../../../../config';
 import { Meal, MealIdentifier } from '../enum';
 import HallStorageModule from '../hall-storage';
+import Duration from '@arcticzeroo/duration';
 
 class MenuDate {
     private _date: Date;
@@ -70,11 +71,11 @@ class FoodModule extends WebserverModule<RequireHallStorageModule> {
 
         this.cache = new ExpiringCache(
             async key => this.retrieveDiningHallMenuFromWeb(await this.deserializeFromKey(key)),
-            12 * 60 * 60 * 1000
+            new Duration({ hours: 12 })
         );
     }
 
-    static serializeToKey({ diningHall, menuDate, meal } : IMenuSelection): string {
+    static serializeToKey({ diningHall, menuDate, meal }: IMenuSelection): string {
         return [diningHall.searchName, menuDate.getFormatted(), meal].join('|');
     }
 
