@@ -7,6 +7,7 @@ import * as config from '../../../config';
 import request from '../../common/retryingRequest';
 import { CacheKey, handleEndpoint } from '../../cache';
 import ConversionUtil from '../../util/ConversionUtil';
+import StringUtil from '../../util/StringUtil';
 
 const router = express.Router();
 
@@ -31,7 +32,7 @@ async function getMovieShowings() {
 
     for (let i = 0; i < titleElements.length; i++) {
         try {
-            const title = $(titleElements[i]).text().trim();
+            const title = $(titleElements[i]).text().trim().split(/\s+/).map(StringUtil.capitalize).join(' ');
             const showings = [];
             const groupedShowings = {};
             const locations: string[] = [];
