@@ -15,4 +15,10 @@ const MealIdentifier: { 0: number, 1: number, 2: number, 3: number, 4: number, g
     getByIndex: i => MealIdentifier[Object.keys(MealIdentifier)[i]]
 };
 
-export { Meal, MealIdentifier };
+const MealRange = {
+    start: Meal.BREAKFAST,
+    end: Meal.LATE_NIGHT_SNACKS,
+    all: [Meal.BREAKFAST, Meal.LUNCH, Meal.DINNER, Meal.LATE_NIGHT, Meal.LATE_NIGHT_SNACKS]
+};
+
+export { Meal, MealIdentifier, MealRange };

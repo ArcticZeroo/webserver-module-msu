@@ -9,7 +9,7 @@ import { DAYS } from '../../util/DateUtil';
 import NodeUtil from '../../util/NodeUtil';
 import PromiseUtil from '../../util/PromiseUtil';
 
-import { Meal } from './enum';
+import {Meal, MealRange} from './enum';
 import { MenuDate } from './api/food';
 
 const timeBetweenRequests = new Duration({ milliseconds: 50 });
@@ -46,7 +46,7 @@ export default class UpdaterModule extends WebserverModule<RequireHallStorageMod
     }
 
     async loadHallMealsForDay(diningHall: IDiningHallWithHours, date: Date) {
-        for (let meal = Meal.BREAKFAST; meal <= Meal.LATE_NIGHT; ++meal) {
+        for (let meal = MealRange.start; meal < MealRange.end; ++meal) {
             try {
                 await this._updateMenu(diningHall, date, meal);
             } catch (e) {

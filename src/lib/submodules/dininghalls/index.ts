@@ -4,10 +4,10 @@ import { IWebserverModuleParams } from '@arcticzeroo/webserver-module/WebserverM
 import * as express from 'express';
 import { CacheKey, handleEndpoint } from '../../cache';
 import { FoodModule, MenuDate } from './api/food';
-import * as api from './enum';
 import HallStorageModule from './hall-storage';
 import log from './logger';
 import UpdaterModule from './updater';
+import {MealRange} from "./enum";
 
 export default class DiningHallModule extends WebserverModule {
     static IDENFITIER: string = 'diningHallModule';
@@ -60,7 +60,7 @@ export default class DiningHallModule extends WebserverModule {
                 for (const hall of halls) {
                     const menuDataPromises = [];
                     const menuDate = MenuDate.fromFormatted(date);
-                    const mealCount = Object.keys(api.Meal).length;
+                    const mealCount = MealRange.end - MealRange.start;
 
                     for (let i = 0; i < mealCount; i++) {
                         menuDataPromises.push(this.food.retrieveMenu(hall, menuDate, i));
@@ -115,7 +115,8 @@ export default class DiningHallModule extends WebserverModule {
 
                 const menuDataPromises = [];
                 const menuDate = MenuDate.fromFormatted(date);
-                const mealCount = Object.keys(api.Meal).length;
+                const mealCount = MealRange.end - MealRange.start;
+
                 for (let i = 0; i < mealCount; i++) {
                     menuDataPromises.push(this.food.retrieveMenu(foundHall, menuDate, i));
                 }
@@ -160,7 +161,7 @@ export default class DiningHallModule extends WebserverModule {
                 } else {
                     const mealNum = parseInt(meal);
 
-                    validMeal = mealNum >= 0 && mealNum < Object.keys(api.Meal).length;
+                    validMeal = mealNum >= 0 && mealNum < MealRange.end;
                 }
 
                 if (!validMeal) {
