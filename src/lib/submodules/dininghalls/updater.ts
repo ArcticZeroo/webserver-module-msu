@@ -12,8 +12,8 @@ import PromiseUtil from '../../util/PromiseUtil';
 import { Meal } from './enum';
 import { MenuDate } from './api/food';
 
-const timeBetweenRequests = new Duration({ seconds: 0.5 });
-const timeBetweenSingleHallLoad = new Duration({ seconds: 5 });
+const timeBetweenRequests = new Duration({ milliseconds: 50 });
+const timeBetweenSingleDayLoad = new Duration({ seconds: 0.5 });
 const timeBetweenLoadIntervals = new Duration({ hours: 1 });
 
 // Collect the last day, and the next week
@@ -46,9 +46,7 @@ export default class UpdaterModule extends WebserverModule<RequireHallStorageMod
     }
 
     async loadHallMealsForDay(diningHall: IDiningHallWithHours, date: Date) {
-        const mealKeys = Object.keys(Meal);
-
-        for (let meal = 0; meal < mealKeys.length; ++meal) {
+        for (let meal = Meal.BREAKFAST; meal <= Meal.LATE_NIGHT; ++meal) {
             try {
                 await this._updateMenu(diningHall, date, meal);
             } catch (e) {
@@ -74,7 +72,7 @@ export default class UpdaterModule extends WebserverModule<RequireHallStorageMod
                 continue;
             }
 
-            await PromiseUtil.pause(timeBetweenSingleHallLoad);
+            this.log.debug(`Finished loading day for hall ${diningHall.searchName}`);
         }
     }
 
@@ -85,25 +83,37 @@ export default class UpdaterModule extends WebserverModule<RequireHallStorageMod
             const date = new Date();
             date.setDate(date.getDate() + i);
 
+            this.log.debug(`Loading day ${i}`);
+
             try {
                 await this.loadAllMealsForDay(date);
             } catch (e) {
                 continue;
             }
 
-            await PromiseUtil.pause(timeBetweenSingleHallLoad);
+            this.log.debug(`Loaded day index ${i} for all dining halls`);
+
+            await PromiseUtil.pause(timeBetweenSingleDayLoad);
         }
     }
 
     _doBatch() {
         this.log.debug('Starting batch load');
+
+        const startTime = Date.now();
+
         this.loadAll()
-            .then(() => this.log.info('Updated dining hall menus'))
+            .then(() => {
+                const elapsedTimeInMs = Date.now() - startTime;
+                const elapsedTimeInMinutes = elapsedTimeInMs / Duration.millisecondsPerMinute;
+
+                this.log.info(`Updated dining hall menus in ${this.log.chalk.magenta(elapsedTimeInMinutes.toFixed(2))} minute(s)`)
+            })
             .catch(e => this.log.error(`Could not load menu batch: ${e}`));
     }
 
     _beginLoading() {
-        this.log.info('Beginning loading...');
+        this.log.info('Beginning loading!');
         NodeUtil.setIntervalImmediate(() => this._doBatch(), timeBetweenLoadIntervals.inMilliseconds);
     }
 
