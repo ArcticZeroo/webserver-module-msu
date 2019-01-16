@@ -1,15 +1,14 @@
-import WebserverModule from '@arcticzeroo/webserver-module';
+import WebserverModule, { IWebserverModuleParams } from '@arcticzeroo/webserver-module';
 
-import DiningHallModule from './src/lib/submodules/dininghalls';
-import EventsModule from './src/lib/submodules/events';
-import FoodTruckModule from './src/lib/submodules/foodtruck';
-import MovieModule from './src/lib/submodules/movies';
-
+import DiningHallModule from './lib/submodules/dininghalls';
+import EventsModule from './lib/submodules/events';
+import FoodTruckModule from './lib/submodules/foodtruck';
+import MovieModule from './lib/submodules/movies';
 
 class MsuRootModule extends WebserverModule {
     static IDENTIFIER: string = 'MSU Root Module';
 
-    constructor(data: any) {
+    constructor(data: IWebserverModuleParams) {
         super({ ...data, name: MsuRootModule.IDENTIFIER });
     }
 

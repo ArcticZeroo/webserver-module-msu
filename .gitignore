@@ -240,3 +240,4 @@ cmake-build-*/
 
 *.js
 *.js.map
+dist

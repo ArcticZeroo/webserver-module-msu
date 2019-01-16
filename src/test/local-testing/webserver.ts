@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express';
-import RootModule from '../../../';
-
+import RootModule from '../../index';
 const app = express();
 
 new RootModule({

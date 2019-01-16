@@ -1,3 +1,4 @@
+import Database from 'fast-mongoose';
 import Environment from '../../../global/Environment';
 import IDiningHallHours from '../../../interfaces/dining-halls/IDiningHallHours';
 import IDiningHallWithHours from '../../../interfaces/dining-halls/IDiningHallWithHours';
@@ -7,10 +8,10 @@ import { retrieveDiningHalls } from './api/halls';
 import MongoUtil from '../../util/MongoUtil';
 import WebserverModule, {IWebserverModuleParams} from '@arcticzeroo/webserver-module';
 import { retrieveDiningHallHours } from './api/hours';
-import { Connection, Model } from 'mongoose';
+import { Model } from 'mongoose';
 
 export default class HallStorageModule extends WebserverModule<RequireHallStorageModule> {
-    public db: Connection & { MsuDiningHall: Model<IDiningHallDocument> };
+    public db: Database & { MsuDiningHall: Model<IDiningHallDocument> };
     private cache: IDiningHallWithHours[];
     private _initialized: boolean = false;
     private _initializeHandlers: Array<() => void> = [];
