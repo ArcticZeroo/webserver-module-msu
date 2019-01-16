@@ -15,15 +15,9 @@ export default class DiningHallModule extends WebserverModule {
     constructor(data: IWebserverModuleParams) {
         super({
             ...data,
-            startByDefault: false,
+            startByDefault: true,
             name: DiningHallModule.IDENFITIER
         });
-
-        for (const child of [ HallStorageModule, FoodModule, UpdaterModule ]) {
-            this.loadChild<{ storage: HallStorageModule }>(child, { storage: this.hallStorage });
-        }
-
-        this.start();
     }
 
     get hallStorage(): HallStorageModule {
@@ -35,6 +29,10 @@ export default class DiningHallModule extends WebserverModule {
     }
 
     start(): void {
+        this.loadChild(HallStorageModule);
+        this.loadChild(FoodModule, { storage: this.hallStorage });
+        this.loadChild(UpdaterModule, { storage: this.hallStorage, foodModule: this.food });
+
         const router = express.Router();
 
         router.get('/list', handleEndpoint(CacheKey.diningHallList, () => this.hallStorage.retrieve(), this));

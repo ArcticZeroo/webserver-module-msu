@@ -14,6 +14,8 @@ class MsuRootModule extends WebserverModule {
     }
 
     start() {
+        this.log.info('Starting MSU module');
+
         for (const child of [
             DiningHallModule,
             FoodTruckModule,

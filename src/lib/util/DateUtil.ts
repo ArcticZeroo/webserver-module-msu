@@ -66,7 +66,7 @@ class DateUtil {
         return date;
     }
 
-    static createDate(...sources: Array<{ month?: number, day?: number }>) {
+    static createDate(...sources: Array<{ hour?: number, minute?: number, month?: number, day?: number }>) {
         const source = Object.assign({}, ...sources);
 
         const date = new Date();

@@ -1,3 +1,4 @@
+import Environment from '../../../global/Environment';
 import IDiningHallHours from '../../../interfaces/dining-halls/IDiningHallHours';
 import IDiningHallWithHours from '../../../interfaces/dining-halls/IDiningHallWithHours';
 import RequireHallStorageModule from '../../../interfaces/RequireHallStorageModule';
@@ -8,22 +9,22 @@ import WebserverModule, {IWebserverModuleParams} from '@arcticzeroo/webserver-mo
 import { retrieveDiningHallHours } from './api/hours';
 import { Connection, Model } from 'mongoose';
 
-declare var DEVELOPMENT: boolean;
-
 export default class HallStorageModule extends WebserverModule<RequireHallStorageModule> {
     public db: Connection & { MsuDiningHall: Model<IDiningHallDocument> };
     private cache: IDiningHallWithHours[];
     private _initialized: boolean = false;
-    private _initializeHandlers: (() => any)[];
+    private _initializeHandlers: Array<() => void> = [];
 
     constructor(data: IWebserverModuleParams & RequireHallStorageModule) {
         super({ ...data, name: HallStorageModule.IDENTIFIER });
     }
 
     start() {
+        this.log.info('Starting hall storage module');
         this.cache = null;
 
         this.db.once('open', () => {
+            this.log.debug('Pulling dining halls from db...');
             this.retrieveAndUpdateCache()
                 .then(() => {
                     this._initialized = true;
@@ -123,6 +124,8 @@ export default class HallStorageModule extends WebserverModule<RequireHallStorag
             }
         }
 
+        this.cache = diningHalls;
+
         return diningHalls;
     }
 
@@ -130,10 +133,11 @@ export default class HallStorageModule extends WebserverModule<RequireHallStorag
         this.log.debug('Retrieving halls...');
 
         if (this.cache && respectCache) {
+            this.log.debug('Have it cached!');
             return this.cache;
         }
 
-        if (!DEVELOPMENT) {
+        if (!Environment.isDevelopment) {
             this.log.debug('Getting from this.db...');
             let dbHalls: IDiningHallWithHours[];
             try {

@@ -1,8 +1,8 @@
 import IMovieLocation from '../../interfaces/movies/IMovieLocation';
 import Identifiers from '../enum/RegexIdentifier';
 import IConvertedMovie from '../../interfaces/movies/IConvertedMovie';
-const StringUtil = require('./StringUtil');
-const DateUtil = require('./DateUtil');
+import StringUtil from './StringUtil';
+import DateUtil from './DateUtil';
 
 interface IConversionData {
     regex: RegExp,

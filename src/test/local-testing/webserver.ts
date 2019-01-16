@@ -1,8 +1,6 @@
 import express, { Request, Response } from 'express';
 import RootModule from '../../../';
 
-eval('global.DEVELOPMENT = true;');
-
 const app = express();
 
 new RootModule({
