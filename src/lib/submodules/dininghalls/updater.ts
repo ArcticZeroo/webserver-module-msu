@@ -12,7 +12,7 @@ import PromiseUtil from '../../util/PromiseUtil';
 import {Meal, MealRange} from './enum';
 import { MenuDate } from './api/food';
 
-const timeBetweenLoadIntervals = new Duration({ hours: 1 });
+const timeBetweenLoadIntervals = new Duration({ hours: 2 });
 
 // Collect the last day, and the next week
 const DAYS_TO_COLLECT = {
