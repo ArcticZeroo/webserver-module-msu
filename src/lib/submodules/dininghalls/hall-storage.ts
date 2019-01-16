@@ -23,6 +23,10 @@ export default class HallStorageModule extends WebserverModule<RequireHallStorag
         this.log.info('Starting hall storage module');
         this.cache = null;
 
+        if (!this.db) {
+           return;
+        }
+
         this.db.once('open', () => {
             this.log.debug('Pulling dining halls from db...');
             this.retrieveAndUpdateCache()

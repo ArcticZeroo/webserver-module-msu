@@ -11,7 +11,7 @@ interface IConversionData {
 
 const Conversions: { [name: string]: IConversionData } = {
     MOVIES: {
-        regex: /(.+)\s+-\s+(.+),\s+(.+?)\s(\d+\w{0,2}(?:(?:-)\d+\w{0,2})?)+\s+@\s+(.+)/,
+        regex: /(.+)\s+-\s+(.+)[,.]\s+(.+?)\s(\d+\w{0,2}(?:(?:-)\d+\w{0,2})?)+\s+@\s+(.+)/,
         // (.+)\s*-\s*(\S+)\s+(\S+)\s+(\d+)(?:[\w]{2})?\s*@\s*(.+)
         // .+\s+-\s+(.+),\s+(.+?)\s((?:\d+(?:-)?)+)[\w]{0,2}\s+@\s+(.+)
         matches: [Identifiers.TEXT, Identifiers.LOCATION, Identifiers.WEEKDAY, Identifiers.MONTH, Identifiers.DAY, 'showtimes']
