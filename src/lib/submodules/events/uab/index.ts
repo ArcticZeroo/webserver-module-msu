@@ -1,4 +1,5 @@
-import IUabEvent from '../../../interfaces/events/IUabEvent';
+import { IWebserverModuleParams } from '@arcticzeroo/webserver-module/WebserverModule';
+import IUabEvent from '../../../../interfaces/events/IUabEvent';
 import { handleEndpoint, CacheKey } from '../../../cache';
 
 import * as express from 'express';
@@ -11,11 +12,11 @@ import request from '../../../common/retryingRequest';
 export default class UabModule extends WebserverModule {
     static IDENTIFIER = 'UAB Events';
 
-    constructor(data) {
+    constructor(data: IWebserverModuleParams) {
         super({ ...data, name: UabModule.IDENTIFIER });
     }
 
-    static async retrieveSingleCalendarEventFromWeb(url): Promise<IUabEvent> {
+    static async retrieveSingleCalendarEventFromWeb(url: string): Promise<IUabEvent> {
         let htmlResponse;
         try {
             htmlResponse = await request(config.pages.UAB_EVENT_BASE + url);

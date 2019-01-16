@@ -1,5 +1,6 @@
-import * as express from 'express';
-import * as cheerio from 'cheerio';
+import { IWebserverModuleParams } from '@arcticzeroo/webserver-module/WebserverModule';
+import express from 'express';
+import cheerio from 'cheerio';
 
 import WebserverModule from '@arcticzeroo/webserver-module';
 import { cache, CacheKey, handleEndpoint } from '../../../cache';
@@ -11,15 +12,15 @@ const PRICE_KILL_DESCRIPTION_REGEX = /\$(\d+(?:\.\d+)?)\s*(.+)/;
 
 export default class FoodTruckMenuModule extends WebserverModule {
     // No longer protected, can use in child loading
-    constructor(props) {
+    constructor(props: IWebserverModuleParams) {
         super(props);
     }
 
-    static isTag($elem, tag) {
+    static isTag($elem: Cheerio, tag: string) {
         return $elem.prop('tagName').toLowerCase() === tag.toLowerCase();
     }
 
-    static parseMenuItemFromListEntry($, $listEntry) {
+    static parseMenuItemFromListEntry($: CheerioStatic, $listEntry: Cheerio) {
         const children = $listEntry.children('p');
 
         const nameAndPrice = $(children.children()[0]).text();
@@ -36,7 +37,7 @@ export default class FoodTruckMenuModule extends WebserverModule {
         return { name, price, description };
     }
 
-    static parseMenuItemsFromList($, menuListElements) {
+    static parseMenuItemsFromList($: CheerioStatic, menuListElements: Cheerio) {
         const menuItems = [];
 
         for (let i = 0; i < menuListElements.length; i++) {
@@ -46,7 +47,7 @@ export default class FoodTruckMenuModule extends WebserverModule {
         return menuItems;
     }
 
-    static parseSingleMenuData($, titleText, $menuList) {
+    static parseSingleMenuData($: CheerioStatic, titleText: string, $menuList: Cheerio) {
         if (!MENU_TITLE_REGEX.test(titleText)) {
             return null;
         }

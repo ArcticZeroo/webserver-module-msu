@@ -1,3 +1,4 @@
+import { IWebserverModuleParams } from '@arcticzeroo/webserver-module/WebserverModule';
 import * as express from 'express';
 import * as cheerio from 'cheerio';
 
@@ -8,6 +9,7 @@ import { cache, CacheKey, handleEndpoint } from '../../cache';
 import request from '../../common/retryingRequest';
 
 import FoodTruckMenuModule from './menu';
+import IFoodTruckStop from '../../../interfaces/food-truck/IFoodTruckStop';
 
 // TODO: Configured maps locations
 /*
@@ -33,14 +35,14 @@ async function retrieveStopsFromWeb() {
 
     const rows = $('.truck-stop-row');
 
-    const stops = [];
+    const stops: IFoodTruckStop[] = [];
 
     if (!rows || rows.length < 1) {
         return stops;
     }
 
-    rows.each(function () {
-        const row = $(this);
+    rows.each(function (index, element) {
+        const row = $(element);
 
         const locMap = row.find('.location-map');
 
@@ -95,7 +97,7 @@ cache.add(CacheKey.foodTruckHtml, { fetch: retrieveFoodTruckHtml });
 export default class FoodTruckModule extends WebserverModule {
     static IDENTIFIER = 'Food Truck';
 
-    constructor(data) {
+    constructor(data: IWebserverModuleParams) {
         super({ ...data, name: FoodTruckModule.IDENTIFIER });
     }
 
