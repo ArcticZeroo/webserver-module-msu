@@ -108,9 +108,11 @@ class FoodModule extends WebserverModule<RequireHallStorageModule> {
 
         const $ = cheerio.load(body);
 
-        const mainText = $('.views-exposed-form')[0].nextSibling.data.trim();
+        // the eatatstate website now uses div.hall-closed to announce
+        // that a meal is not designated for a given menu
+        const isClosed = $('.hall-closed').length !== 0;
 
-        if (mainText.toLowerCase().includes('closed')) {
+        if (isClosed) {
             return { closed: true, venues: [] };
         }
 
