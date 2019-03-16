@@ -15,6 +15,7 @@ import * as config from '../../../../config';
 import { Meal, MealIdentifier } from '../enum';
 import HallStorageModule from '../hall-storage';
 import Duration from '@arcticzeroo/duration';
+import StringUtil from "../../../util/StringUtil";
 
 class MenuDate {
     private _date: Date;
@@ -110,7 +111,8 @@ class FoodModule extends WebserverModule<RequireHallStorageModule> {
 
         // the eatatstate website now uses div.hall-closed to announce
         // that a meal is not designated for a given menu
-        const isClosed = $('.hall-closed').length !== 0;
+        // Based on their source code (see https://eatatstate.msu.edu/themes/eatatstate/js/menu/menu.js?v=8.6.10), it should also be obvious that the first jquery statement is equivalent
+        const isClosed = $('.eas-view-group').length == 0 || $('.hall-closed').length !== 0;
 
         if (isClosed) {
             return { closed: true, venues: [] };
@@ -123,8 +125,7 @@ class FoodModule extends WebserverModule<RequireHallStorageModule> {
         places.each(function(index, element) {
             const $place = $(element);
 
-            let venueName = $($place.find('.venue-title')[0]).text();
-            venueName = venueName[0].toUpperCase() + venueName.substr(1).toLowerCase();
+            const venueName = StringUtil.capitalize($($place.find('.venue-title')[0]).text());
 
             const descriptionElems = $place.find('.venue-description > p')[0];
 
