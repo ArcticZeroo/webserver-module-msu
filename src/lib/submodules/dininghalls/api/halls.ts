@@ -28,7 +28,7 @@ async function retrieveDiningHalls(): Promise<IDiningHallBase[]> {
     const nameSquares = $('.dining-menu-name');
     const diningHalls: IDiningHallBase[] = [];
 
-    nameSquares.each(function(index, element) {
+    nameSquares.each(function (index, element) {
         // @ts-ignore
         const $nameSquare = $(element);
 
@@ -61,8 +61,10 @@ async function retrieveDiningHalls(): Promise<IDiningHallBase[]> {
         const hallName = $($nameSquare.find('.dining-hall-name')[0]).text();
         const brandName = $($nameSquare.find('.brand-name')[0]).text();
 
-        diningHalls.push({ hallName, brandName, fullName,
-            searchName: hallName.toLowerCase().replace('hall', '').trim() });
+        diningHalls.push({
+            hallName, brandName, fullName,
+            searchName: hallName.toLowerCase().replace('hall', '').trim()
+        });
     });
 
     return diningHalls;

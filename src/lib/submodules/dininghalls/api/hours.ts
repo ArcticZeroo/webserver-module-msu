@@ -4,7 +4,8 @@ import IDiningHallBase from '../../../../interfaces/dining-halls/IDiningHallBase
 import IDiningHallHours from '../../../../interfaces/dining-halls/IDiningHallHours';
 import IMealHours from '../../../../interfaces/dining-halls/IMealHours';
 import request from '../../../common/retryingRequest';
-const { Meal } = require('../enum');
+
+const {Meal} = require('../enum');
 
 // Begin, end should be a number representing the hour of the day in 24h format
 // e.g. 7am would be 7.0, 4pm would be 16.0 and 4:30pm would be 16.5
@@ -77,7 +78,7 @@ function parseSingleData(rawData: string, meal: number): IMealHours {
     rawData = rawData.trim().toLowerCase();
 
     if (rawData.startsWith('closed')) {
-        return { closed: true, meal };
+        return {closed: true, meal};
     }
 
     if (!CRAZY_HOURS_REGEX.test(rawData)) {
@@ -88,9 +89,9 @@ function parseSingleData(rawData: string, meal: number): IMealHours {
 
     const [, time, extra] = hoursMatch;
 
-    const { start, end } = parseOnlyTimeString(time);
+    const {start, end} = parseOnlyTimeString(time);
 
-    const hoursObject: IMealHours = { closed: false, begin: start, end, meal, closeTimes: {}, openTimes: {} };
+    const hoursObject: IMealHours = {closed: false, begin: start, end, meal, closeTimes: {}, openTimes: {}};
 
     if (extra) {
         const extraPieces = extra.split(';').map(p => p.trim());
@@ -252,7 +253,7 @@ function parseTimeData(data: Array<string[]>): IDiningHallHours {
 
     for (const day of Object.keys(parsedHours)) {
         while (parsedHours[day].length < Object.keys(Meal).length) {
-            parsedHours[day].push({ closed: true, meal: parsedHours[day].length });
+            parsedHours[day].push({closed: true, meal: parsedHours[day].length});
         }
     }
 

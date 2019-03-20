@@ -6,7 +6,7 @@ import RequireHallStorageModule from '../../../interfaces/RequireHallStorageModu
 import { IDiningHallDocument } from '../../../models/dining-halls/hall/DiningHall';
 import { retrieveDiningHalls } from './api/halls';
 import MongoUtil from '../../util/MongoUtil';
-import WebserverModule, {IWebserverModuleParams} from '@arcticzeroo/webserver-module';
+import WebserverModule, { IWebserverModuleParams } from '@arcticzeroo/webserver-module';
 import { retrieveDiningHallHours } from './api/hours';
 import { Model } from 'mongoose';
 
@@ -17,7 +17,7 @@ export default class HallStorageModule extends WebserverModule<RequireHallStorag
     private _initializeHandlers: Array<() => void> = [];
 
     constructor(data: IWebserverModuleParams & RequireHallStorageModule) {
-        super({ ...data, name: HallStorageModule.IDENTIFIER });
+        super({...data, name: HallStorageModule.IDENTIFIER});
     }
 
     start() {
@@ -26,7 +26,7 @@ export default class HallStorageModule extends WebserverModule<RequireHallStorag
 
         if (!this.db) {
             this.log.warning('Database is null');
-           return;
+            return;
         }
 
         this.db.once('open', () => {
@@ -95,7 +95,7 @@ export default class HallStorageModule extends WebserverModule<RequireHallStorag
 
                 if (hall.searchName === searchName) {
                     // Set the hours property on this hall
-                    const hallWithHours = Object.assign({}, hall, { hours: diningHallHours[searchName] });
+                    const hallWithHours = Object.assign({}, hall, {hours: diningHallHours[searchName]});
                     // Add to processed ones
                     processedDiningHalls.push(hallWithHours);
                     // Remove it from the original list so we don't
