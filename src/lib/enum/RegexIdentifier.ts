@@ -7,6 +7,6 @@ enum Identifiers {
     HOUR = 'hour',
     MINUTE = 'minute',
     SUFFIX = 'suffix'
-};
+}
 
 export default Identifiers;

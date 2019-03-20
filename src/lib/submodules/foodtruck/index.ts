@@ -46,14 +46,14 @@ async function retrieveStopsFromWeb() {
 
         const locMap = row.find('.location-map');
 
-        let location = { x: 0, y: 0 };
+        let location = {x: 0, y: 0};
 
         if (locMap) {
             const x = locMap.data('x-coord');
             const y = locMap.data('y-coord');
 
             if (x && y) {
-                location = { x, y };
+                location = {x, y};
             }
 
             locMap.remove();
@@ -92,13 +92,13 @@ async function retrieveStopsFromWeb() {
     return stops;
 }
 
-cache.add(CacheKey.foodTruckHtml, { fetch: retrieveFoodTruckHtml });
+cache.add(CacheKey.foodTruckHtml, {fetch: retrieveFoodTruckHtml});
 
 export default class FoodTruckModule extends WebserverModule {
     static IDENTIFIER = 'Food Truck';
 
     constructor(data: IWebserverModuleParams) {
-        super({ ...data, name: FoodTruckModule.IDENTIFIER });
+        super({...data, name: FoodTruckModule.IDENTIFIER});
     }
 
     start() {

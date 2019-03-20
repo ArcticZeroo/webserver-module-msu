@@ -82,7 +82,7 @@ async function getMovieShowings() {
 
                 for (const date of movie.showtimes) {
                     groupedShowings[movie.location].push(date);
-                    showings.push({ location: movie.location, date });
+                    showings.push({location: movie.location, date});
                 }
             }
 
@@ -107,7 +107,7 @@ export default class MovieModule extends WebserverModule {
     static IDENTIFIER = 'Movie Night';
 
     constructor(data: IWebserverModuleParams) {
-        super({ ...data, name: MovieModule.IDENTIFIER });
+        super({...data, name: MovieModule.IDENTIFIER});
     }
 
     start() {

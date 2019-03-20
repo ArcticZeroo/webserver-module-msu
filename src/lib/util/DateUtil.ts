@@ -21,11 +21,11 @@ class DateUtil {
     }
 
     /**
-    * Create a date from a msu time string.
-    * @param {string} timeString - The time of day to use, should look like "11:30 PM"
-    * @param {string} dayString - The day and month to use, should look like "Thursday, October 12th"
-    * @returns {Date}
-    */
+     * Create a date from a msu time string.
+     * @param {string} timeString - The time of day to use, should look like "11:30 PM"
+     * @param {string} dayString - The day and month to use, should look like "Thursday, October 12th"
+     * @returns {Date}
+     */
     static createFromFoodTruckString(timeString: string, dayString: string): Date {
         const split = timeString.split(' ');
 
