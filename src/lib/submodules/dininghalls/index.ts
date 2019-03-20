@@ -7,7 +7,7 @@ import { FoodModule, MenuDate } from './api/food';
 import HallStorageModule from './hall-storage';
 import log from './logger';
 import UpdaterModule from './updater';
-import {MealRange} from "./enum";
+import { MealRange } from './enum';
 
 export default class DiningHallModule extends WebserverModule {
     static IDENFITIER: string = 'diningHallModule';
@@ -30,19 +30,19 @@ export default class DiningHallModule extends WebserverModule {
 
     start(): void {
         this.loadChild(HallStorageModule);
-        this.loadChild(FoodModule, { storage: this.hallStorage });
-        this.loadChild(UpdaterModule, { storage: this.hallStorage, foodModule: this.food });
+        this.loadChild(FoodModule, {storage: this.hallStorage});
+        this.loadChild(UpdaterModule, {storage: this.hallStorage, foodModule: this.food});
 
         const router = express.Router();
 
         router.get('/list', handleEndpoint(CacheKey.diningHallList, () => this.hallStorage.retrieve(), this));
 
         router.get('/menu/all/:date/', (req, res) => {
-            const { date } = req.params;
+            const {date} = req.params;
 
             const go = async () => {
                 if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-                    return res.status(400).json({ error: 'Bad Request', message: 'Invalid date value.' });
+                    return res.status(400).json({error: 'Bad Request', message: 'Invalid date value.'});
                 }
 
                 log.debug('Date is valid');
@@ -63,7 +63,7 @@ export default class DiningHallModule extends WebserverModule {
                     const mealCount = MealRange.end - MealRange.start;
 
                     for (let i = 0; i < mealCount; i++) {
-                        menuDataPromises.push(this.food.retrieveMenu(hall, menuDate, i));
+                        menuDataPromises.push(this.food.retrieveSingleMenu(hall, menuDate, i));
                     }
 
                     hallMenuPromises.push(Promise.all(menuDataPromises).then(data => hallMenus[hall.searchName] = data));
@@ -89,13 +89,13 @@ export default class DiningHallModule extends WebserverModule {
         });
 
         router.get('/menu/:search/:date/all', (req, res) => {
-            const { search, date } = req.params;
+            const {search, date} = req.params;
 
             const go = async () => {
                 log.debug(`search:${search}, date:${date}`);
 
                 if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-                    return res.status(400).json({ error: 'Bad Request', message: 'Invalid date value.' });
+                    return res.status(400).json({error: 'Bad Request', message: 'Invalid date value.'});
                 }
 
                 log.debug('Date is valid');
@@ -108,7 +108,7 @@ export default class DiningHallModule extends WebserverModule {
                 }
 
                 if (!search || !foundHall) {
-                    return res.status(400).json({ error: 'Bad Request', message: 'Invalid dining hall search value.' });
+                    return res.status(400).json({error: 'Bad Request', message: 'Invalid dining hall search value.'});
                 }
 
                 log.debug(`Found ${foundHall.fullName}`);
@@ -118,7 +118,7 @@ export default class DiningHallModule extends WebserverModule {
                 const mealCount = MealRange.end - MealRange.start;
 
                 for (let i = 0; i < mealCount; i++) {
-                    menuDataPromises.push(this.food.retrieveMenu(foundHall, menuDate, i));
+                    menuDataPromises.push(this.food.retrieveSingleMenu(foundHall, menuDate, i));
                 }
 
                 let menuData;
@@ -127,7 +127,7 @@ export default class DiningHallModule extends WebserverModule {
                 } catch (e) {
                     log.error(`Could not get menus for ${foundHall.hallName}:`);
                     console.error(e);
-                    return res.status(500).json({ error: 'Internal Server Error' });
+                    return res.status(500).json({error: 'Internal Server Error'});
                 }
 
                 res.status(200).json(menuData);
@@ -144,13 +144,13 @@ export default class DiningHallModule extends WebserverModule {
         });
 
         router.get('/menu/:search/:date/:meal', (req, res) => {
-            const { search, date, meal } = req.params;
+            const {search, date, meal} = req.params;
 
             const go = async () => {
                 log.debug(`search:${search}, date:${date}, meal:${meal}`);
 
                 if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-                    return res.status(400).json({ error: 'Bad Request', message: 'Invalid date value.' });
+                    return res.status(400).json({error: 'Bad Request', message: 'Invalid date value.'});
                 }
 
                 log.debug('Date is valid');
@@ -165,7 +165,7 @@ export default class DiningHallModule extends WebserverModule {
                 }
 
                 if (!validMeal) {
-                    return res.status(400).json({ error: 'Bad Request', message: 'Invalid meal value.' });
+                    return res.status(400).json({error: 'Bad Request', message: 'Invalid meal value.'});
                 }
 
                 log.debug('Meal is valid');
@@ -178,18 +178,18 @@ export default class DiningHallModule extends WebserverModule {
                 }
 
                 if (!search || !foundHall) {
-                    return res.status(400).json({ error: 'Bad Request', message: 'Invalid dining hall search value.' });
+                    return res.status(400).json({error: 'Bad Request', message: 'Invalid dining hall search value.'});
                 }
 
                 log.debug(`Found ${foundHall.fullName}`);
 
                 let menuData;
                 try {
-                    menuData = await this.food.retrieveMenu(foundHall, MenuDate.fromFormatted(date), parseInt(meal));
+                    menuData = await this.food.retrieveSingleMenu(foundHall, MenuDate.fromFormatted(date), parseInt(meal));
                 } catch (e) {
                     log.error(`Could not get menu for ${foundHall.hallName}:`);
                     console.error(e);
-                    return res.status(500).json({ error: 'Internal Server Error' });
+                    return res.status(500).json({error: 'Internal Server Error'});
                 }
 
                 res.status(200).json(menuData);

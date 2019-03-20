@@ -1,6 +1,6 @@
 import { IWebserverModuleParams } from '@arcticzeroo/webserver-module/WebserverModule';
 import IUabEvent from '../../../../interfaces/events/IUabEvent';
-import { handleEndpoint, CacheKey } from '../../../cache';
+import { CacheKey, handleEndpoint } from '../../../cache';
 
 import * as express from 'express';
 import * as cheerio from 'cheerio';
@@ -13,7 +13,7 @@ export default class UabModule extends WebserverModule {
     static IDENTIFIER = 'UAB Events';
 
     constructor(data: IWebserverModuleParams) {
-        super({ ...data, name: UabModule.IDENTIFIER });
+        super({...data, name: UabModule.IDENTIFIER});
     }
 
     static async retrieveSingleCalendarEventFromWeb(url: string): Promise<IUabEvent> {
@@ -64,7 +64,7 @@ export default class UabModule extends WebserverModule {
             descriptionPieces.push($(descriptionDataElements[i]).text().trim());
         }
 
-        return { title, startTime, endTime, location, isAllDay, description: descriptionPieces.join('\n') };
+        return {title, startTime, endTime, location, isAllDay, description: descriptionPieces.join('\n')};
     }
 
     static async retrieveCalendarEventListFromWeb(): Promise<IUabEvent[]> {

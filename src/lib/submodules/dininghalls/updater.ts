@@ -2,17 +2,15 @@ import WebserverModule from '@arcticzeroo/webserver-module';
 import Duration from '@arcticzeroo/duration';
 import IDiningHallWithHours from '../../../interfaces/dining-halls/IDiningHallWithHours';
 import IDiningHallMenu from '../../../interfaces/dining-halls/menu/IDiningHallMenu';
-import IMenuSelection from '../../../interfaces/dining-halls/menu/IMenuSelection';
 import RequireFoodModule from '../../../interfaces/RequireFoodModule';
 import RequireHallStorageModule from '../../../interfaces/RequireHallStorageModule';
 import { DAYS } from '../../util/DateUtil';
 import NodeUtil from '../../util/NodeUtil';
-import PromiseUtil from '../../util/PromiseUtil';
-
-import {Meal, MealRange} from './enum';
 import { MenuDate } from './api/food';
+import IMenuDaySelection from '../../../interfaces/dining-halls/menu/IMenuDaySelection';
+import retrieveMenusForDayFromWeb from './api/menu';
 
-const timeBetweenLoadIntervals = new Duration({ hours: 2 });
+const timeBetweenLoadIntervals = new Duration({hours: 2});
 
 // Collect the last day, and the next week
 const DAYS_TO_COLLECT = {
@@ -25,32 +23,30 @@ export default class UpdaterModule extends WebserverModule<RequireHallStorageMod
         return 'UpdaterModule';
     }
 
-    private async _updateMenu(diningHall: IDiningHallWithHours, date: Date, meal: number): Promise<void> {
+    private async _updateDayMenus(diningHall: IDiningHallWithHours, date: Date): Promise<void> {
         if (diningHall.hours[DAYS[date.getDay()]].closed) {
             return;
         }
 
         const menuDate = new MenuDate(date);
-        const menuSelection: IMenuSelection = { diningHall, meal, menuDate };
+        const menuSelection: IMenuDaySelection = {diningHall, menuDate};
 
-        let menu: IDiningHallMenu;
+        let menu: IDiningHallMenu[];
         try {
-            menu = await this.data.foodModule.retrieveDiningHallMenuFromWeb(menuSelection);
+            menu = await retrieveMenusForDayFromWeb(menuSelection);
         } catch (e) {
             throw e;
         }
 
-        this.data.foodModule.cacheMenu(menuSelection, menu);
+        this.data.foodModule.cacheDayMenus(menuSelection, menu);
     }
 
     async loadHallMealsForDay(diningHall: IDiningHallWithHours, date: Date) {
-        for (let meal = MealRange.start; meal < MealRange.end; ++meal) {
-            try {
-                await this._updateMenu(diningHall, date, meal);
-            } catch (e) {
-                this.log.error(`Failed to load menu for hall ${this.log.chalk.cyan(diningHall.searchName)} on date ${this.log.chalk.magenta(date.toLocaleDateString())}:`);
-                console.error(e);
-            }
+        try {
+            await this._updateDayMenus(diningHall, date);
+        } catch (e) {
+            this.log.error(`Failed to load menu for hall ${this.log.chalk.cyan(diningHall.searchName)} on date ${this.log.chalk.magenta(date.toLocaleDateString())}:`);
+            console.error(e);
         }
     }
 

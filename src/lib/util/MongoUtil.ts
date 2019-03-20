@@ -1,4 +1,4 @@
-import { Model, Document } from 'mongoose';
+import { Document, Model } from 'mongoose';
 
 export default class MongoUtil {
     static save(doc: Document): Promise<void> {

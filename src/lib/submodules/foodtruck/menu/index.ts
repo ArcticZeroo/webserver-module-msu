@@ -34,7 +34,7 @@ export default class FoodTruckMenuModule extends WebserverModule {
         const [, , description] = descriptionAndPrice.match(PRICE_KILL_DESCRIPTION_REGEX);
 
         // Leave price as a string since json doesn't allow floats
-        return { name, price, description };
+        return {name, price, description};
     }
 
     static parseMenuItemsFromList($: CheerioStatic, menuListElements: Cheerio) {
@@ -59,7 +59,7 @@ export default class FoodTruckMenuModule extends WebserverModule {
 
         const menuItems = FoodTruckMenuModule.parseMenuItemsFromList($, menuItemElements);
 
-        return { title: menuName, items: menuItems };
+        return {title: menuName, items: menuItems};
     }
 
     static async retrieveMenusFromWeb() {

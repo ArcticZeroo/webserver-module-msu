@@ -49,7 +49,7 @@ interface IConvertedObject {
 
 function extendConverted<D = {}>(obj: any): IConvertedObject & D {
     obj.getDate = function () {
-        const { [Identifiers.MONTH]: month, [Identifiers.DAY]: day } = obj;
+        const {[Identifiers.MONTH]: month, [Identifiers.DAY]: day} = obj;
 
         if (!month || !day) {
             return null;
@@ -58,11 +58,11 @@ function extendConverted<D = {}>(obj: any): IConvertedObject & D {
         // Calendar handling
         const monthIndex = MONTHS.indexOf(StringUtil.capitalize(month));
 
-        return { month: monthIndex, day };
+        return {month: monthIndex, day};
     };
 
     obj.getTime = function () {
-        let { [Identifiers.HOUR]: hour, [Identifiers.MINUTE]: minute, [Identifiers.SUFFIX]: suffix } = obj;
+        let {[Identifiers.HOUR]: hour, [Identifiers.MINUTE]: minute, [Identifiers.SUFFIX]: suffix} = obj;
 
         if (!hour || !minute || !suffix) {
             return null;
@@ -76,7 +76,7 @@ function extendConverted<D = {}>(obj: any): IConvertedObject & D {
             hour += 12;
         }
 
-        return { hour, minute };
+        return {hour, minute};
     };
 
     obj.toDate = function () {
@@ -130,7 +130,7 @@ export default class ConversionUtil {
             converted[Identifiers.LOCATION] += ` ${extra}`;
         }
 
-        const movie: IMovieLocation = { location: converted[Identifiers.LOCATION], showtimes: [] };
+        const movie: IMovieLocation = {location: converted[Identifiers.LOCATION], showtimes: []};
 
         const showtimes: string[] = converted.showtimes.split(/\s*[,&]\s+/g);
 
@@ -156,7 +156,7 @@ export default class ConversionUtil {
         }
 
         for (const day of relevantDays) {
-            const dateInformation = { ...converted.getDate(), day };
+            const dateInformation = {...converted.getDate(), day};
 
             for (const showtime of showtimes) {
                 const convertedShowtime = ConversionUtil.convert(showtime, Conversions.MOVIE_TIME);
