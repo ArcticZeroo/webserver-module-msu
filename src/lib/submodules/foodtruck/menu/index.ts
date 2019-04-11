@@ -7,7 +7,7 @@ import { cache, CacheKey, handleEndpoint } from '../../../cache';
 
 const MENU_TITLE_REGEX = /^(.+?)\s+(?:service)?\s*menu(?: \| (.+?) ([\d-]+)(?:,\s+)?(\d+))?$/i;
 // text, name, month, dates, year
-const MENU_NAME_AND_PRICE_REGEX = /(.+?)\*?[ \s]-\s+\$([\d.]+)/;
+const MENU_NAME_AND_PRICE_REGEX = /(.+?)\*?\s*-\s*\$([\d.]+)/;
 const PRICE_KILL_DESCRIPTION_REGEX = /\$(\d+(?:\.\d+)?)\s*(.+)/;
 
 export default class FoodTruckMenuModule extends WebserverModule {
